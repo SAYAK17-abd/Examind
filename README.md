@@ -23,7 +23,7 @@ The goal is to build more than a basic AI grading system — EXAMIND is designed
 🔐 Role-based authentication
 📑 Student & teacher reports
 🏗️ System Architecture
-                         ┌───────────────────┐
+                                                 ┌───────────────────┐
                          │      Student      │
                          └─────────┬─────────┘
                                    │
@@ -60,6 +60,18 @@ The goal is to build more than a basic AI grading system — EXAMIND is designed
                             │ Feedback Generation  │
                             └──────────────────────┘
 
+       Answer Sheet
+            │
+            ▼
+     ┌──────────────┐
+     │ OCR Service  │
+     └──────┬───────┘
+            │
+            ▼
+       Extracted Text
+            │
+            ▼
+       AI Evaluation
 
        Answer Sheet
             │
