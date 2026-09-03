@@ -45,4 +45,5 @@ public class StudentExamController {
         ExamResponse response = examService.getExamByIdForStudent(id);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
 }
