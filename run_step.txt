@@ -34,12 +34,12 @@ Your backend is now LIVE on http://localhost:8080!
 3. ACCESSING WEB INTERFACES (WHEN RUNNING METHOD 1)
 --------------------------------------------------------------------------------
 
-A) SWAGGER UI (API Documentation & Testing):
+(A) SWAGGER UI (API Documentation & Testing):
    URL: http://localhost:8080/swagger-ui.html
    - Interactive testing for all Student, Teacher, Admin, AI, and File APIs.
    - OpenAPI Raw JSON: http://localhost:8080/api-docs
 
-B) H2 DATABASE WEB CONSOLE:
+(B) H2 DATABASE WEB CONSOLE:
    URL: http://localhost:8080/h2-console
    
    IMPORTANT: Fill the login form with these EXACT values:
@@ -142,3 +142,4 @@ A3: Click inside the PowerShell window where it is running and press:
     Ctrl + C
 
 ================================================================================
+
