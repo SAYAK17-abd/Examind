@@ -1,0 +1,144 @@
+================================================================================
+EXAMIND BACKEND — COMPLETE STEP-BY-STEP RUN GUIDE
+================================================================================
+
+This document contains everything you need to run, test, and manage the EXAMIND
+backend application from start to finish on Windows.
+
+--------------------------------------------------------------------------------
+1. PREREQUISITES
+--------------------------------------------------------------------------------
+- OS: Windows 10/11
+- Java: JDK 21 or JDK 25 installed
+- Maven: Not required separately! The Maven Wrapper (mvnw.cmd) is bundled.
+- Terminal: Windows PowerShell or Command Prompt
+
+--------------------------------------------------------------------------------
+2. METHOD 1: QUICK RUN WITH IN-MEMORY DATABASE (RECOMMENDED FOR LOCAL DEV)
+--------------------------------------------------------------------------------
+This method requires ZERO external installations (no Docker, no PostgreSQL needed).
+It uses H2 in-memory database with PostgreSQL emulation mode.
+
+Step 1: Open PowerShell in the project directory:
+        cd "d:\CODES\project.all\New folder"
+
+Step 2: Start the application:
+        .\mvnw.cmd spring-boot:run
+
+Step 3: Wait until you see the log:
+        "Started ExamindBackendApplication in X.XXX seconds"
+
+Your backend is now LIVE on http://localhost:8080!
+
+--------------------------------------------------------------------------------
+3. ACCESSING WEB INTERFACES (WHEN RUNNING METHOD 1)
+--------------------------------------------------------------------------------
+
+A) SWAGGER UI (API Documentation & Testing):
+   URL: http://localhost:8080/swagger-ui.html
+   - Interactive testing for all Student, Teacher, Admin, AI, and File APIs.
+   - OpenAPI Raw JSON: http://localhost:8080/api-docs
+
+B) H2 DATABASE WEB CONSOLE:
+   URL: http://localhost:8080/h2-console
+   
+   IMPORTANT: Fill the login form with these EXACT values:
+   +--------------------+--------------------------------+
+   | Setting Name       | Generic H2 (Embedded)          |
+   | Driver Class       | org.h2.Driver                  |
+   | JDBC URL           | jdbc:h2:mem:examind_dev        |
+   | User Name          | sa                             |
+   | Password           | (leave completely empty)       |
+   +--------------------+--------------------------------+
+   Click "Connect" -> You will see all 14 database tables!
+
+--------------------------------------------------------------------------------
+4. DEFAULT ADMIN CREDENTIALS (AUTO-SEEDED ON STARTUP)
+--------------------------------------------------------------------------------
+The application automatically creates the initial platform administrator:
+- Email:    admin@examind.ai
+- Password: Admin@Examind2026!
+- Role:     ROLE_ADMIN
+
+HOW TO AUTHORIZE IN SWAGGER UI:
+1. In Swagger UI, go to "Authentication" -> "POST /api/auth/login"
+2. Click "Try it out" and enter:
+   {
+     "email": "admin@examind.ai",
+     "password": "Admin@Examind2026!"
+   }
+3. Click "Execute" and copy the "accessToken" value.
+4. Scroll to the top of Swagger, click the green "Authorize" button.
+5. Paste the token and click "Authorize" -> "Close".
+6. Now you can execute any protected endpoint!
+
+--------------------------------------------------------------------------------
+5. METHOD 2: RUNNING WITH NATIVE POSTGRESQL (PRODUCTION DATABASE)
+--------------------------------------------------------------------------------
+If you have installed PostgreSQL directly on Windows:
+
+Step 1: Open pgAdmin 4 or psql and create a database named "examind":
+        CREATE DATABASE examind;
+
+Step 2: Open PowerShell in the project folder and set your credentials:
+        $env:DATABASE_URL="jdbc:postgresql://localhost:5432/examind"
+        $env:DATABASE_USERNAME="postgres"
+        $env:DATABASE_PASSWORD="your_postgres_password"
+
+Step 3: Run with the production profile:
+        .\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=prod
+
+NOTE: Hibernate will automatically create all tables, indexes, and relations!
+You do NOT need to run any manual CREATE TABLE scripts.
+
+--------------------------------------------------------------------------------
+6. METHOD 3: RUNNING WITH DOCKER COMPOSE (FULL STACK)
+--------------------------------------------------------------------------------
+If you have Docker Desktop installed, you can start the entire stack
+(PostgreSQL 16 + Python FastAPI AI Service + Spring Boot Backend) with 1 command:
+
+Step 1: Open PowerShell in the project folder:
+        cd "d:\CODES\project.all\New folder"
+
+Step 2: Start all containers in the background:
+        docker-compose up --build -d
+
+Step 3: Check container status:
+        docker-compose ps
+
+Step 4: To stop the containers:
+        docker-compose down
+
+--------------------------------------------------------------------------------
+7. RUNNING AUTOMATED INTEGRATION TESTS
+--------------------------------------------------------------------------------
+To execute the comprehensive automated integration test suite:
+
+        .\mvnw.cmd clean test
+
+This executes:
+- AuthControllerIntegrationTest (Registration, Login, Refresh Token, Profile)
+- ExamAndSubmissionIntegrationTest (Full exam lifecycle, AI evaluation, override)
+- SecurityAndOwnershipTest (RBAC boundaries, 401 & 403 authorization checks)
+
+All 7 integration tests should pass with:
+"BUILD SUCCESS" (Tests run: 7, Failures: 0, Errors: 0)
+
+--------------------------------------------------------------------------------
+8. COMMON TROUBLESHOOTING
+--------------------------------------------------------------------------------
+
+Q1: "Port 8080 was already in use"
+A1: An older instance of the backend is still running.
+    In PowerShell, run:
+    Get-Process -Id (Get-NetTCPConnection -LocalPort 8080).OwningProcess | Stop-Process -Force
+
+Q2: H2 Console says "Connection refused: getsockopt: localhost [90067-232]"
+A2: Change JDBC URL from "jdbc:h2:tcp://localhost/~/test" to:
+    jdbc:h2:mem:examind_dev
+
+Q3: How do I stop the running backend?
+A3: Click inside the PowerShell window where it is running and press:
+    Ctrl + C
+
+================================================================================
