@@ -15,7 +15,7 @@
 	<description>EXAMIND — AI-Powered Examination and Evaluation Platform Backend</description>
 
 	<properties>
-		<java.version>21</java.version>
+		<java.version>25</java.version>
 		<jjwt.version>0.12.6</jjwt.version>
 		<springdoc.version>2.6.0</springdoc.version>
 	</properties>

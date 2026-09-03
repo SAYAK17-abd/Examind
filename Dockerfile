@@ -1,6 +1,6 @@
 # Multi-stage Docker build for EXAMIND Backend
 # Stage 1: Build the application with Maven
-FROM eclipse-temurin:21-jdk-alpine AS builder
+FROM eclipse-temurin:25-jdk-alpine AS builder
 WORKDIR /workspace
 
 # Copy maven wrapper and pom.xml first for layer caching
@@ -13,7 +13,7 @@ COPY src src
 RUN ./mvnw clean package -DskipTests -B
 
 # Stage 2: Minimal, secure runtime image
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
 # Install curl for healthcheck and create non-root user

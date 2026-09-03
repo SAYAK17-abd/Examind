@@ -1,6 +1,6 @@
 # EXAMIND — AI-Powered Examination & Evaluation Platform Backend
 
-**EXAMIND** is an enterprise-grade, production-ready backend built with **Java 21** and **Spring Boot 3.3.5**. It powers an AI-assisted online examination, automated evaluation, teacher-in-the-loop review, anti-plagiarism similarity analysis, and comprehensive performance analytics platform.
+**EXAMIND** is an enterprise-grade, production-ready backend built with **Java 25** and **Spring Boot 3.3.5**. It powers an AI-assisted online examination, automated evaluation, teacher-in-the-loop review, anti-plagiarism similarity analysis, and comprehensive performance analytics platform.
 
 ---
 
@@ -102,7 +102,7 @@
 
 | Component | Technology |
 |---|---|
-| Language | Java 21 |
+| Language | Java 25 |
 | Framework | Spring Boot 3.3.5 |
 | Web Layer | Spring MVC + Jackson |
 | Security | Spring Security 6 + JJWT 0.12.6 + BCrypt (strength 12) |
@@ -120,7 +120,7 @@
 
 ### Option 1: Local Development (Zero-Config In-Memory H2)
 
-Prerequisites: JDK 21+ installed.
+Prerequisites: JDK 25+ installed.
 
 ```bash
 # Clone and enter project directory
