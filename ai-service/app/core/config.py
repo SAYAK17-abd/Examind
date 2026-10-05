@@ -44,6 +44,16 @@ class Settings(BaseSettings):
     EVALUATION_VERSION: str = "1.0"
     PROMPT_VERSION: str = "rubric-evaluator-v1"
 
+    # OCR and Document Processing Parameters (MEM3)
+    OCR_PROVIDER: str = "tesseract"  # "tesseract", "mock", "handwriting"
+    OCR_CONFIDENCE_THRESHOLD: float = 0.70
+    OCR_MIN_DIGITAL_TEXT_CHARS: int = 50
+    TESSERACT_CMD: Optional[str] = None
+    TESSDATA_PREFIX: Optional[str] = None
+    MAX_UPLOAD_SIZE_MB: int = 15
+    ALLOWED_EXTENSIONS: list[str] = ["pdf", "jpg", "jpeg", "png"]
+    OCR_DPI: int = 300
+
 
 @lru_cache()
 def get_settings() -> Settings:
