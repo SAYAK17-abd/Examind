@@ -16,8 +16,44 @@ public class ExamAnalyticsResponse {
     private Double averageAiConfidence;
     private long teacherReviewedCount;
     private long autoEvaluatedCount;
+    private long totalStudents;
+    private Double reviewRequiredPercentage = 0.0;
+    private Double teacherOverrideRate = 0.0;
+    private Double aiHumanScoreDifference = 0.0;
 
     public ExamAnalyticsResponse() {
+    }
+
+    public long getTotalStudents() {
+        return totalStudents;
+    }
+
+    public void setTotalStudents(long totalStudents) {
+        this.totalStudents = totalStudents;
+    }
+
+    public Double getReviewRequiredPercentage() {
+        return reviewRequiredPercentage;
+    }
+
+    public void setReviewRequiredPercentage(Double reviewRequiredPercentage) {
+        this.reviewRequiredPercentage = reviewRequiredPercentage;
+    }
+
+    public Double getTeacherOverrideRate() {
+        return teacherOverrideRate;
+    }
+
+    public void setTeacherOverrideRate(Double teacherOverrideRate) {
+        this.teacherOverrideRate = teacherOverrideRate;
+    }
+
+    public Double getAiHumanScoreDifference() {
+        return aiHumanScoreDifference;
+    }
+
+    public void setAiHumanScoreDifference(Double aiHumanScoreDifference) {
+        this.aiHumanScoreDifference = aiHumanScoreDifference;
     }
 
     public Long getExamId() {

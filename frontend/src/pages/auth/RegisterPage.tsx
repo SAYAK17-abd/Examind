@@ -17,7 +17,7 @@ export const RegisterPage: React.FC = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'STUDENT' | 'TEACHER' | 'ADMIN'>('STUDENT');
+  const [role, setRole] = useState<'ROLE_STUDENT' | 'ROLE_TEACHER' | 'ROLE_ADMIN'>('ROLE_STUDENT');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -112,11 +112,11 @@ export const RegisterPage: React.FC = () => {
         <Select
           label="Account Role"
           value={role}
-          onChange={(e) => setRole(e.target.value as 'STUDENT' | 'TEACHER' | 'ADMIN')}
+          onChange={(e) => setRole(e.target.value as 'ROLE_STUDENT' | 'ROLE_TEACHER' | 'ROLE_ADMIN')}
           options={[
-            { value: 'STUDENT', label: 'Student — Take exams & view AI feedback' },
-            { value: 'TEACHER', label: 'Teacher / Instructor — Create exams & review AI evaluations' },
-            { value: 'ADMIN', label: 'Administrator — Manage accounts & system policies' },
+            { value: 'ROLE_STUDENT', label: 'Student — Take exams & view AI feedback' },
+            { value: 'ROLE_TEACHER', label: 'Teacher / Instructor — Create exams & review AI evaluations' },
+            { value: 'ROLE_ADMIN', label: 'Administrator — Manage accounts & system policies' },
           ]}
         />
 

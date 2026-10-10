@@ -14,8 +14,44 @@ public class AiEvaluationResponseDto {
     private String feedback;
     private List<String> detectedConcepts = new ArrayList<>();
     private List<String> missingConcepts = new ArrayList<>();
+    private Double rubricScore;
+    private List<String> strengths = new ArrayList<>();
+    private List<String> weaknesses = new ArrayList<>();
+    private Boolean requiresHumanReview;
 
     public AiEvaluationResponseDto() {
+    }
+
+    public Double getRubricScore() {
+        return rubricScore;
+    }
+
+    public void setRubricScore(Double rubricScore) {
+        this.rubricScore = rubricScore;
+    }
+
+    public List<String> getStrengths() {
+        return strengths;
+    }
+
+    public void setStrengths(List<String> strengths) {
+        this.strengths = strengths != null ? strengths : new ArrayList<>();
+    }
+
+    public List<String> getWeaknesses() {
+        return weaknesses;
+    }
+
+    public void setWeaknesses(List<String> weaknesses) {
+        this.weaknesses = weaknesses != null ? weaknesses : new ArrayList<>();
+    }
+
+    public Boolean getRequiresHumanReview() {
+        return requiresHumanReview;
+    }
+
+    public void setRequiresHumanReview(Boolean requiresHumanReview) {
+        this.requiresHumanReview = requiresHumanReview;
     }
 
     public Double getScore() {

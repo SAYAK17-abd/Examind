@@ -76,6 +76,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/api-docs/**",
                                 "/h2-console/**",
+                                "/actuator/health",
+                                "/actuator/info",
                                 "/error"
                         ).permitAll()
                         // Role-based endpoints

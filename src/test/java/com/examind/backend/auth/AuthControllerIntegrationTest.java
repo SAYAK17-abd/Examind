@@ -105,5 +105,75 @@ public class AuthControllerIntegrationTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error").value("INVALID_CREDENTIALS"));
     }
+
+    @Autowired
+    private com.examind.backend.user.repository.UserRepository userRepository;
+
+    @Test
+    @DisplayName("Logout should revoke refresh token and prevent subsequent refresh")
+    void testLogoutAndRevocation() throws Exception {
+        String email = "logout_test_" + System.currentTimeMillis() + "@examind.test";
+        RegisterRequest registerRequest = new RegisterRequest(
+                email, "Password123!", "Alice", "Logout", RoleName.ROLE_STUDENT
+        );
+
+        MvcResult regResult = mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerRequest)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        JsonNode json = objectMapper.readTree(regResult.getResponse().getContentAsString());
+        String refreshToken = json.get("data").get("refreshToken").asText();
+
+        // Perform logout
+        RefreshTokenRequest logoutReq = new RefreshTokenRequest(refreshToken);
+        mockMvc.perform(post("/api/auth/logout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(logoutReq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true));
+
+        // Attempting to refresh with the revoked token must fail with 401
+        mockMvc.perform(post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(logoutReq)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("Blocked user cannot log in and receives 401 Unauthorized")
+    void testBlockedUserCannotLogin() throws Exception {
+        String email = "blocked_test_" + System.currentTimeMillis() + "@examind.test";
+        RegisterRequest registerRequest = new RegisterRequest(
+                email, "Password123!", "Blocked", "User", RoleName.ROLE_STUDENT
+        );
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerRequest)))
+                .andExpect(status().isCreated());
+
+        // Update user status to BLOCKED
+        com.examind.backend.user.entity.User user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
+        user.setStatus(com.examind.backend.user.entity.UserStatus.BLOCKED);
+        userRepository.save(user);
+
+        // Attempt login
+        LoginRequest loginRequest = new LoginRequest(email, "Password123!");
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("Invalid or malformed JWT token must return 401 Unauthorized")
+    void testInvalidJwtTokenRejected() throws Exception {
+        mockMvc.perform(get("/api/users/me")
+                        .header("Authorization", "Bearer invalid.malformed.jwt.token"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("UNAUTHORIZED"));
+    }
 }
 

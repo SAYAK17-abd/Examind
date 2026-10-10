@@ -19,6 +19,8 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
 
     List<Evaluation> findByAnswer_Question_Exam_Id(Long examId);
 
+    List<Evaluation> findByAnswer_Submission_Student_Id(Long studentId);
+
     long countByAnswer_Question_Exam_IdAndStatus(Long examId, EvaluationStatus status);
 
     @Query("SELECT AVG(e.score) FROM Evaluation e WHERE e.answer.question.id = :questionId")

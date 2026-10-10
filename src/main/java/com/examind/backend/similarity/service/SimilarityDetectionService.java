@@ -95,34 +95,28 @@ public class SimilarityDetectionService {
             return 0.0;
         }
 
-        Set<String> set1 = tokenizeToNgrams(text1.toLowerCase(), 2);
-        Set<String> set2 = tokenizeToNgrams(text2.toLowerCase(), 2);
+        Set<String> words1 = tokenizeWords(text1);
+        Set<String> words2 = tokenizeWords(text2);
 
-        if (set1.isEmpty() || set2.isEmpty()) return 0.0;
+        if (words1.isEmpty() || words2.isEmpty()) return 0.0;
 
-        Set<String> intersection = new HashSet<>(set1);
-        intersection.retainAll(set2);
+        Set<String> intersection = new HashSet<>(words1);
+        intersection.retainAll(words2);
 
-        Set<String> union = new HashSet<>(set1);
-        union.addAll(set2);
+        Set<String> union = new HashSet<>(words1);
+        union.addAll(words2);
 
         return (double) intersection.size() / union.size();
     }
 
-    private static Set<String> tokenizeToNgrams(String text, int n) {
-        String[] words = text.split("\\W+");
-        Set<String> ngrams = new HashSet<>();
-        for (int i = 0; i <= words.length - n; i++) {
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < n; j++) {
-                if (j > 0) sb.append(" ");
-                sb.append(words[i + j]);
+    private static Set<String> tokenizeWords(String text) {
+        String[] tokens = text.toLowerCase().split("\\W+");
+        Set<String> words = new HashSet<>();
+        for (String token : tokens) {
+            if (!token.isBlank()) {
+                words.add(token);
             }
-            ngrams.add(sb.toString());
         }
-        if (ngrams.isEmpty() && words.length > 0) {
-            ngrams.addAll(Arrays.asList(words));
-        }
-        return ngrams;
+        return words;
     }
 }

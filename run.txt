@@ -1,0 +1,203 @@
+================================================================================
+EXAMIND PLATFORM — MASTER RUN & EXECUTION GUIDE
+================================================================================
+
+This file contains everything needed to run, test, and interact with the complete
+EXAMIND platform (Python FastAPI AI Service + Java Spring Boot Backend + React Frontend).
+
+================================================================================
+TABLE OF CONTENTS
+================================================================================
+1. PREREQUISITES & ENVIRONMENT
+2. METHOD 1: 1-CLICK LAUNCHER (RECOMMENDED)
+3. METHOD 2: STEP-BY-STEP MANUAL LAUNCH (3 TERMINALS)
+4. METHOD 3: DOCKER COMPOSE LAUNCH
+5. ACCESSING WEB INTERFACES & URLS
+6. DEFAULT LOGIN CREDENTIALS
+7. RUNNING AUTOMATED TEST SUITES
+8. COMMON TROUBLESHOOTING & PORT CLEANUP
+
+================================================================================
+1. PREREQUISITES & ENVIRONMENT
+================================================================================
+- OS: Windows 10/11
+- Java: JDK 21+ installed (e.g. Oracle OpenJDK 21 or 25)
+- Python: Python 3.11+ installed with uvicorn
+- Node.js & Package Manager: Node v18+ with pnpm or npm
+- Maven: Not required separately! The Maven Wrapper (mvnw.cmd) is bundled.
+
+Project Root Directory:
+d:\CODES\project.all\own\AI_projects\EXAMIND
+
+================================================================================
+2. METHOD 1: 1-CLICK LAUNCHER (RECOMMENDED)
+================================================================================
+We have created automated launchers that start all 3 services in separate windows:
+
+OPTION A — Using Windows File Explorer:
+Double-click:
+    run_all.bat
+
+OPTION B — Using PowerShell:
+In the project root, run:
+    .\run_all.ps1
+
+This will automatically open 3 separate terminal windows:
+  [Window 1] Python FastAPI AI Service   -> http://localhost:8000
+  [Window 2] Spring Boot Java Backend    -> http://localhost:8080
+  [Window 3] React TypeScript Frontend   -> http://localhost:5173
+
+================================================================================
+3. METHOD 2: STEP-BY-STEP MANUAL LAUNCH (3 TERMINALS)
+================================================================================
+If you prefer running services manually in your own terminal tabs:
+
+--------------------------------------------------------------------------------
+STEP 1: Start the Python FastAPI AI Service (Terminal 1)
+--------------------------------------------------------------------------------
+Open Terminal 1 in the project root:
+
+    cd ai-service
+    python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+Wait until you see:
+    "Application startup complete. Uvicorn running on http://0.0.0.0:8000"
+
+--------------------------------------------------------------------------------
+STEP 2: Start the Java Spring Boot Backend (Terminal 2)
+--------------------------------------------------------------------------------
+Open Terminal 2 in the project root:
+
+    .\mvnw.cmd spring-boot:run
+
+Wait until you see:
+    "Started ExamindBackendApplication in X.XXX seconds"
+Backend is now live on http://localhost:8080!
+
+--------------------------------------------------------------------------------
+STEP 3: Start the React + TypeScript Frontend (Terminal 3)
+--------------------------------------------------------------------------------
+Open Terminal 3 in the project root:
+
+    cd frontend
+    pnpm dev
+
+(Or: npm run dev)
+
+Wait until you see:
+    "VITE v6.4.3  ready in XXX ms"
+    "➜  Local:   http://localhost:5173/"
+
+Open your browser at:
+    http://localhost:5173
+
+================================================================================
+4. METHOD 3: DOCKER COMPOSE LAUNCH
+================================================================================
+If you have Docker Desktop installed and want to run via containers:
+
+In the project root:
+    docker-compose up --build -d
+
+To check running containers:
+    docker-compose ps
+
+To stop all containers:
+    docker-compose down
+
+================================================================================
+5. ACCESSING WEB INTERFACES & URLS
+================================================================================
+
+1. REACT WEB APPLICATION (STUDENT, TEACHER & ADMIN UI):
+   URL: http://localhost:5173
+   - Student Dashboard, timed exam room, autosave, OCR answer sheet upload
+   - Teacher exam management, question & rubric builder, AI score review/override
+   - Admin user directory & account management
+
+2. BACKEND REST API & SWAGGER UI:
+   URL: http://localhost:8080/swagger-ui.html
+   Raw OpenAPI JSON: http://localhost:8080/api-docs
+
+3. H2 DATABASE WEB CONSOLE (IN-MEMORY DATABASE):
+   URL: http://localhost:8080/h2-console
+   Login settings:
+   +--------------------+--------------------------------+
+   | Driver Class       | org.h2.Driver                  |
+   | JDBC URL           | jdbc:h2:mem:examind_dev        |
+   | User Name          | sa                             |
+   | Password           | (leave completely empty)       |
+   +--------------------+--------------------------------+
+   Click "Connect" to view all 14 database tables and live records!
+
+4. PYTHON AI SERVICE SWAGGER DOCUMENTATION:
+   URL: http://localhost:8000/docs
+   Health Check: http://localhost:8000/health
+
+================================================================================
+6. DEFAULT LOGIN CREDENTIALS
+================================================================================
+
+The login page (http://localhost:5173/login) includes 1-click "Demo Quick Fill"
+buttons for each role. You can also manually use:
+
+ROLE: STUDENT
+  - Email:    student@examind.edu
+  - Password: Password123!
+
+ROLE: TEACHER / INSTRUCTOR
+  - Email:    teacher@examind.edu
+  - Password: Password123!
+
+ROLE: PLATFORM ADMINISTRATOR
+  - Email:    admin@examind.ai  (or admin@examind.edu)
+  - Password: Admin@Examind2026! (or Password123!)
+
+* Note: You can also register any new account on http://localhost:5173/register
+  and select Student, Teacher, or Admin role directly.
+
+================================================================================
+7. RUNNING AUTOMATED TEST SUITES
+================================================================================
+
+To verify code quality and functionality across the entire platform:
+
+1. FRONTEND TEST SUITE (Vitest + React Testing Library):
+   cd frontend
+   pnpm test
+   (Runs 13 tests: timers, autosave indicator, question palette, utility functions)
+
+2. AI SERVICE TEST SUITE (pytest):
+   cd ai-service
+   python -m pytest tests/
+   (Runs 54 tests: OCR providers, preprocessing, PDF extraction, question segmentation)
+
+3. BACKEND INTEGRATION TEST SUITE (JUnit 5 + Spring Boot Test):
+   .\mvnw.cmd clean test
+   (Runs 7 integration tests: Auth, Submissions, Security, Role boundaries)
+
+================================================================================
+8. COMMON TROUBLESHOOTING & PORT CLEANUP
+================================================================================
+
+Q1: "Port 8080 (or 8000, 5173) is already in use"
+A1: A previous process was left running. Run these PowerShell commands to kill:
+    # Kill port 8080 (Backend)
+    Get-Process -Id (Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue).OwningProcess -ErrorAction SilentlyContinue | Stop-Process -Force
+
+    # Kill port 8000 (AI Service)
+    Get-Process -Id (Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue).OwningProcess -ErrorAction SilentlyContinue | Stop-Process -Force
+
+    # Kill port 5173 (Frontend)
+    Get-Process -Id (Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue).OwningProcess -ErrorAction SilentlyContinue | Stop-Process -Force
+
+Q2: H2 Console says "Connection refused"
+A2: Ensure JDBC URL is set to "jdbc:h2:mem:examind_dev", not tcp://localhost.
+
+Q3: How do I stop any service running in a terminal?
+A3: Click inside the terminal window and press:
+    Ctrl + C
+
+================================================================================
+END OF GUIDE
+================================================================================

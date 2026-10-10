@@ -208,7 +208,19 @@ public class ExamAndSubmissionIntegrationTest {
                 .andExpect(jsonPath("$.data.content[0].examTitle").value("Computer Science 101 Midterm"))
                 .andExpect(jsonPath("$.data.content[0].passed").value(true));
 
-        // 13. Teacher views analytics
+        // 13. Student checks performance and insights
+        mockMvc.perform(get("/api/student/performance")
+                        .header("Authorization", "Bearer " + studentToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.totalExamsTaken").value(1))
+                .andExpect(jsonPath("$.data.averagePercentage").isNumber());
+
+        mockMvc.perform(get("/api/student/insights")
+                        .header("Authorization", "Bearer " + studentToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.totalExamsTaken").value(1));
+
+        // 14. Teacher views analytics
         mockMvc.perform(get("/api/teacher/exams/" + examId + "/analytics")
                         .header("Authorization", "Bearer " + teacherToken))
                 .andExpect(status().isOk())

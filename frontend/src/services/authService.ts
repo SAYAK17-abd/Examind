@@ -15,7 +15,11 @@ export const authService = {
   },
 
   async register(data: RegisterRequest): Promise<AuthResponse> {
-    const res = await apiClient.post<ApiResponse<AuthResponse>>('/api/auth/register', data);
+    const roleNormalized = data.role.toUpperCase().startsWith('ROLE_')
+      ? (data.role.toUpperCase() as any)
+      : (`ROLE_${data.role.toUpperCase()}` as any);
+    const payload = { ...data, role: roleNormalized };
+    const res = await apiClient.post<ApiResponse<AuthResponse>>('/api/auth/register', payload);
     return res.data.data;
   },
 

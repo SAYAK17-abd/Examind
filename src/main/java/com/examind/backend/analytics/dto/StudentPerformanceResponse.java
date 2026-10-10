@@ -9,6 +9,10 @@ public class StudentPerformanceResponse {
     private Double averagePercentage;
     private long examsPassed;
     private String overallGrade;
+    private java.util.List<String> strongTopics = new java.util.ArrayList<>();
+    private java.util.List<String> weakTopics = new java.util.ArrayList<>();
+    private java.util.Map<String, Double> topicMastery = new java.util.HashMap<>();
+    private java.util.List<String> recommendations = new java.util.ArrayList<>();
 
     public StudentPerformanceResponse() {
     }
@@ -21,6 +25,38 @@ public class StudentPerformanceResponse {
         this.averagePercentage = averagePercentage;
         this.examsPassed = examsPassed;
         this.overallGrade = overallGrade;
+    }
+
+    public java.util.List<String> getStrongTopics() {
+        return strongTopics;
+    }
+
+    public void setStrongTopics(java.util.List<String> strongTopics) {
+        this.strongTopics = strongTopics != null ? strongTopics : new java.util.ArrayList<>();
+    }
+
+    public java.util.List<String> getWeakTopics() {
+        return weakTopics;
+    }
+
+    public void setWeakTopics(java.util.List<String> weakTopics) {
+        this.weakTopics = weakTopics != null ? weakTopics : new java.util.ArrayList<>();
+    }
+
+    public java.util.Map<String, Double> getTopicMastery() {
+        return topicMastery;
+    }
+
+    public void setTopicMastery(java.util.Map<String, Double> topicMastery) {
+        this.topicMastery = topicMastery != null ? topicMastery : new java.util.HashMap<>();
+    }
+
+    public java.util.List<String> getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(java.util.List<String> recommendations) {
+        this.recommendations = recommendations != null ? recommendations : new java.util.ArrayList<>();
     }
 
     public Long getStudentId() {

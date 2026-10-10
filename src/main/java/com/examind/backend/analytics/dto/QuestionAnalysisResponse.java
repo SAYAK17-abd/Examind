@@ -10,6 +10,7 @@ public class QuestionAnalysisResponse {
     private Double successRate;
     private String topic;
     private String difficulty;
+    private Boolean commonlyMissed = false;
 
     public QuestionAnalysisResponse() {
     }
@@ -23,6 +24,15 @@ public class QuestionAnalysisResponse {
         this.successRate = successRate;
         this.topic = topic;
         this.difficulty = difficulty;
+        this.commonlyMissed = successRate != null && successRate < 50.0;
+    }
+
+    public Boolean getCommonlyMissed() {
+        return commonlyMissed;
+    }
+
+    public void setCommonlyMissed(Boolean commonlyMissed) {
+        this.commonlyMissed = commonlyMissed;
     }
 
     public Long getQuestionId() {
