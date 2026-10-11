@@ -54,6 +54,10 @@ public class ExamSummaryResponse {
         return duration;
     }
 
+    public Integer getDurationMinutes() {
+        return duration;
+    }
+
     public void setDuration(Integer duration) {
         this.duration = duration;
     }

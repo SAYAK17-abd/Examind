@@ -76,6 +76,7 @@ export const ExamForm: React.FC = () => {
         title,
         description,
         subject,
+        duration: Number(durationMinutes),
         durationMinutes: Number(durationMinutes),
         totalMarks: Number(totalMarks),
         passingMarks: Number(passingMarks),

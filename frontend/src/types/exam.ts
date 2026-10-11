@@ -27,6 +27,7 @@ export interface CreateExamRequest {
   title: string;
   description?: string;
   subject: string;
+  duration?: number;
   durationMinutes: number;
   totalMarks: number;
   passingMarks: number;
@@ -38,6 +39,7 @@ export interface UpdateExamRequest {
   title?: string;
   description?: string;
   subject?: string;
+  duration?: number;
   durationMinutes?: number;
   totalMarks?: number;
   passingMarks?: number;

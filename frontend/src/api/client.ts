@@ -125,12 +125,19 @@ function handleLogout() {
 
 export function extractErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    const apiResp = error.response?.data as ApiResponse<unknown> | undefined;
-    if (apiResp?.message) {
-      return apiResp.message;
+    const data = error.response?.data as any;
+    const errors = data?.validationErrors || data?.fieldErrors;
+    if (errors && typeof errors === 'object') {
+      const details = Object.entries(errors)
+        .map(([field, msg]) => `${field}: ${msg}`)
+        .join(', ');
+      if (details) return details;
     }
-    if (typeof error.response?.data === 'string') {
-      return error.response.data;
+    if (data?.message) {
+      return data.message;
+    }
+    if (typeof data === 'string') {
+      return data;
     }
     return error.message || 'An unexpected network error occurred';
   }

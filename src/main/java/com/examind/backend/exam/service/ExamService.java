@@ -41,6 +41,9 @@ public class ExamService {
     @Transactional
     public ExamResponse createExam(CreateExamRequest request, HttpServletRequest servletRequest) {
         validateExamTiming(request.getStartTime(), request.getEndTime(), request.getDuration());
+        if (request.getPassingMarks() != null && request.getPassingMarks() > request.getTotalMarks()) {
+            throw new BadRequestException("Passing marks cannot exceed total marks");
+        }
 
         Long currentUserId = SecurityUtils.getCurrentUserId();
         User teacher = userRepository.findById(currentUserId)
@@ -92,6 +95,9 @@ public class ExamService {
         }
 
         validateExamTiming(request.getStartTime(), request.getEndTime(), request.getDuration());
+        if (request.getPassingMarks() != null && request.getPassingMarks() > request.getTotalMarks()) {
+            throw new BadRequestException("Passing marks cannot exceed total marks");
+        }
 
         exam.setTitle(request.getTitle().trim());
         exam.setDescription(request.getDescription());

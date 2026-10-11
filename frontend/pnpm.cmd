@@ -26,3 +26,4 @@ if exist "%~dp0node_modules\vite\bin\vite.js" (
     echo Error: frontend node_modules/vite not found. >&2
     exit /b 1
 )
+

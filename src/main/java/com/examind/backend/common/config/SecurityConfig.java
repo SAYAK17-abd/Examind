@@ -82,7 +82,7 @@ public class SecurityConfig {
                         ).permitAll()
                         // Role-based endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/teacher/**").hasRole("TEACHER")
+                        .requestMatchers("/api/teacher/**").hasAnyRole("TEACHER", "ADMIN")
                         .requestMatchers("/api/student/**").hasRole("STUDENT")
                         // Common authenticated endpoints (/api/users/**, /api/notifications/**)
                         .anyRequest().authenticated()

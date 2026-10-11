@@ -1,8 +1,11 @@
 package com.examind.backend.exam.dto;
-
+ 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateExamRequest {
 
     @NotBlank(message = "Title is required")
@@ -12,9 +15,12 @@ public class CreateExamRequest {
     @Size(max = 2000, message = "Description must not exceed 2000 characters")
     private String description;
 
+    private String subject;
+
     @NotNull(message = "Duration in minutes is required")
     @Min(value = 5, message = "Duration must be at least 5 minutes")
     @Max(value = 1440, message = "Duration cannot exceed 24 hours (1440 minutes)")
+    @JsonAlias({"durationMinutes", "duration"})
     private Integer duration;
 
     @NotNull(message = "Start time is required")
@@ -49,12 +55,28 @@ public class CreateExamRequest {
         this.description = description;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     public Integer getDuration() {
         return duration;
     }
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public Integer getDurationMinutes() {
+        return duration;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.duration = durationMinutes;
     }
 
     public LocalDateTime getStartTime() {
