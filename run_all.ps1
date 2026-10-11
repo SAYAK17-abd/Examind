@@ -10,8 +10,11 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$root\ai-serv
 Write-Host "[2/3] Starting Spring Boot Backend on port 8080..." -ForegroundColor Yellow
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$root'; .\mvnw.cmd spring-boot:run"
 
+# Refresh environment PATH from registry in case a runtime path updated
+$env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
+
 Write-Host "[3/3] Starting React Frontend on port 5173..." -ForegroundColor Yellow
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$root\frontend'; pnpm dev"
+Start-Process powershell -ArgumentList "-NoExit", "-ExecutionPolicy", "Bypass", "-File", "$root\frontend\pnpm.ps1", "dev"
 
 Write-Host ""
 Write-Host "===============================================================================" -ForegroundColor Green

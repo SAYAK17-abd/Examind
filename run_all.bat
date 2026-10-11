@@ -11,7 +11,7 @@ echo [2/3] Starting Spring Boot Backend on port 8080...
 start "EXAMIND - Spring Boot Backend (Port 8080)" cmd /k "cd /d "%~dp0" && mvnw.cmd spring-boot:run"
 
 echo [3/3] Starting React Frontend on port 5173...
-start "EXAMIND - React Frontend (Port 5173)" cmd /k "cd /d "%~dp0frontend" && pnpm dev"
+start "EXAMIND - React Frontend (Port 5173)" cmd /k "cd /d "%~dp0frontend" && call .\pnpm.cmd dev"
 
 echo.
 echo ===============================================================================
