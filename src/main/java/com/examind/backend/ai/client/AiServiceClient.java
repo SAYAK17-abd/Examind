@@ -47,31 +47,51 @@ public class AiServiceClient {
                     validateAndSanitize(response, request.getMaxMarks());
                     return response;
                 }
+                throw new IllegalStateException("AI service returned empty response payload");
             } catch (Exception ex) {
-                log.warn("External AI Service unavailable ({}), falling back to intelligent evaluation engine", ex.getMessage());
+                log.error("External AI Service unavailable at {}: {}. Flagging for mandatory teacher review.", aiServiceUrl, ex.getMessage());
+                // In production, do NOT silently mask external AI service failure with heuristic fallback!
+                AiEvaluationResponseDto failedResponse = new AiEvaluationResponseDto();
+                failedResponse.setScore(0.0);
+                failedResponse.setConfidence(0.0); // 0.0 confidence guarantees REVIEW_REQUIRED status
+                failedResponse.setCorrectness(0.0);
+                failedResponse.setCompleteness(0.0);
+                failedResponse.setSemanticSimilarity(0.0);
+                failedResponse.setConceptCoverage(0.0);
+                failedResponse.setFeedback("AI Evaluation Service error (" + ex.getClass().getSimpleName() + "): "
+                        + ex.getMessage() + ". Flagged for manual teacher evaluation.");
+                failedResponse.setMissingConcepts(List.of("AI evaluation failed"));
+                return failedResponse;
             }
         }
 
+        log.info("Mock mode enabled: generating mock evaluation for test/development");
         return generateIntelligentEvaluation(request);
     }
 
     private void validateAndSanitize(AiEvaluationResponseDto res, Double maxMarks) {
+        double validMax = (maxMarks != null && maxMarks > 0) ? maxMarks : 10.0;
         if (res.getScore() == null) {
             res.setScore(0.0);
         } else {
-            res.setScore(Math.max(0.0, Math.min(maxMarks, res.getScore())));
+            res.setScore(Math.max(0.0, Math.min(validMax, res.getScore())));
         }
 
         if (res.getConfidence() == null) {
-            res.setConfidence(0.85);
+            res.setConfidence(0.50);
         } else {
             res.setConfidence(Math.max(0.0, Math.min(1.0, res.getConfidence())));
         }
 
-        if (res.getConceptCoverage() == null) res.setConceptCoverage(0.80);
-        if (res.getCorrectness() == null) res.setCorrectness(0.85);
-        if (res.getCompleteness() == null) res.setCompleteness(0.80);
-        if (res.getSemanticSimilarity() == null) res.setSemanticSimilarity(0.82);
+        res.setConceptCoverage(clampRatio(res.getConceptCoverage(), 0.0));
+        res.setCorrectness(clampRatio(res.getCorrectness(), 0.0));
+        res.setCompleteness(clampRatio(res.getCompleteness(), 0.0));
+        res.setSemanticSimilarity(clampRatio(res.getSemanticSimilarity(), 0.0));
+    }
+
+    private double clampRatio(Double val, double defaultVal) {
+        if (val == null) return defaultVal;
+        return Math.max(0.0, Math.min(1.0, val));
     }
 
     private AiEvaluationResponseDto generateIntelligentEvaluation(AiEvaluationRequestDto req) {

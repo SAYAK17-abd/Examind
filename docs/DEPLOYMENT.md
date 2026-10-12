@@ -3,7 +3,7 @@
 ## 1. Prerequisites
 
 - **Docker Engine**: Version 24.0+ and **Docker Compose**: Version 2.20+
-- **JDK (for non-container build)**: Java 21 or Java 25
+- **JDK (for non-container build)**: Java 21 LTS
 - **Python (for non-container AI service)**: Python 3.11 with `pip`
 - **Node.js (for non-container frontend)**: Node 20+ with `pnpm`
 

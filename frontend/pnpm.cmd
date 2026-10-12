@@ -16,14 +16,20 @@ if %errorlevel%==0 (
 )
 
 if not defined NODE_BIN (
-    echo Error: Node.js runtime not found. Please install Node.js via winget install OpenJS.NodeJS.LTS >&2
+    echo Error: Node.js runtime not found. Please install Node.js. >&2
     exit /b 1
 )
 
-if exist "%~dp0node_modules\vite\bin\vite.js" (
-    "%NODE_BIN%" "%~dp0node_modules\vite\bin\vite.js" %*
+set "CMD_ARG=%~1"
+if "%CMD_ARG%"=="run" (
+    shift
+    set "CMD_ARG=%~1"
+)
+
+if "%CMD_ARG%"=="test" (
+    "%NODE_BIN%" "%~dp0node_modules\vitest\vitest.mjs" run
+) else if "%CMD_ARG%"=="build" (
+    "%NODE_BIN%" "%~dp0node_modules\typescript\bin\tsc" -b && "%NODE_BIN%" "%~dp0node_modules\vite\bin\vite.js" build
 ) else (
-    echo Error: frontend node_modules/vite not found. >&2
-    exit /b 1
+    "%NODE_BIN%" "%~dp0node_modules\vite\bin\vite.js" %*
 )
-

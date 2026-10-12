@@ -72,6 +72,11 @@ public class ResultService {
         result.setGrade(Result.calculateGrade(result.getPercentage()));
         double passing = exam.getPassingMarks() != null ? exam.getPassingMarks() : (totalMarks * 0.40);
         result.setPassed(obtainedScore >= passing);
+        if (submission.getStatus() == com.examind.backend.submission.entity.SubmissionStatus.REVIEW_REQUIRED) {
+            result.setStatus("PENDING_REVIEW");
+        } else {
+            result.setStatus("PUBLISHED");
+        }
 
         Result saved = resultRepository.save(result);
         log.info("Saved Result for student {} on exam {}: Score={}/{}, Grade={}",

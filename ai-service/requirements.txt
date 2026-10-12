@@ -1,12 +1,30 @@
-fastapi>=0.110.0
-uvicorn>=0.28.0
-pydantic>=2.6.0
+# ==============================================================================
+# EXAMIND AI & OCR Service Dependencies
+# ==============================================================================
+
+# Core API & Server
+fastapi>=0.110.0,<0.120.0
+uvicorn[standard]>=0.28.0,<0.35.0
+pydantic>=2.6.0,<3.0.0
+pydantic-settings>=2.2.0,<3.0.0
 python-multipart>=0.0.9
+httpx>=0.27.0,<0.29.0
+
+# OCR & Document Ingestion Pipeline
 pytesseract>=0.3.10
-pypdf>=4.0.0
-pypdfium2>=4.20.0
-pillow>=10.0.0
-numpy>=1.24.0
-opencv-python-headless>=4.8.0
-scipy>=1.10.0
-scikit-image>=0.20.0
+pypdf>=4.0.0,<5.0.0
+pypdfium2>=4.20.0,<5.0.0
+pillow>=10.0.0,<12.0.0
+numpy>=1.24.0,<2.2.0
+opencv-python-headless>=4.8.0,<5.0.0
+scipy>=1.10.0,<1.15.0
+scikit-image>=0.20.0,<0.25.0
+
+# Testing & Quality Assurance
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+
+# Optional / External AI Providers (Protected by runtime fallback guards)
+# sentence-transformers>=2.3.0
+# openai>=1.12.0
+# google-genai>=0.1.1

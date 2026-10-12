@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-examind}
       POSTGRES_USER: ${POSTGRES_USER:-examind_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-examind_secure_password_2026}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Error: POSTGRES_PASSWORD is required in .env}
     ports:
       - "5432:5432"
     volumes:
@@ -33,7 +33,7 @@ services:
       PORT: 8000
       TESSERACT_CMD: ${TESSERACT_CMD:-tesseract}
       OCR_MAX_IMAGE_DIMENSION: 3000
-      CORS_ORIGINS: http://localhost:3000,http://localhost:5173,http://localhost:8080,http://frontend:80
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:5173,http://localhost:8080,http://frontend:80}
     healthcheck:
       test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")'"]
       interval: 10s
@@ -59,9 +59,9 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-examind}
       DATABASE_USERNAME: ${POSTGRES_USER:-examind_user}
-      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-examind_secure_password_2026}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?Error: POSTGRES_PASSWORD is required in .env}
       FLYWAY_ENABLED: "true"
-      JWT_SECRET: ${JWT_SECRET:-c2VjdXJlLWV4YW1pbmQtand0LXNlY3JldC1rZXktZm9yLXByb2R1Y3Rpb24tZGVwbG95bWVudC0yMDI2}
+      JWT_SECRET: ${JWT_SECRET:?Error: JWT_SECRET is required in .env (min 256 bits)}
       JWT_ACCESS_EXPIRATION_MS: ${JWT_ACCESS_EXPIRATION_MS:-86400000}
       JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-604800000}
       AI_SERVICE_URL: http://ai-service:8000
@@ -69,7 +69,7 @@ services:
       AI_SERVICE_MOCK_MODE: "false"
       OCR_SERVICE_MOCK_MODE: "false"
       UPLOAD_DIR: /app/uploads
-      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:5173,http://localhost:8080,http://frontend:80
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:5173,http://localhost:8080,http://frontend:80}
     volumes:
       - file_uploads:/app/uploads
     healthcheck:

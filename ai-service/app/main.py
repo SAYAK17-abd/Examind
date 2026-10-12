@@ -1,7 +1,8 @@
+import os
 import time
 import uuid
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, status, UploadFile, File, Depends
+from fastapi import FastAPI, Request, status, UploadFile, File, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -12,6 +13,7 @@ from app.core.logging import logger
 from app.providers.llm_provider import ProviderFactory
 from app.schemas.evaluation import EvaluationRequest, EvaluationResponse
 from app.services.evaluation_service import EvaluationService
+from app.pipelines.document_pipeline import get_document_pipeline, DocumentPipeline
 
 
 @asynccontextmanager
@@ -46,12 +48,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS Middleware
+# CORS Middleware with restricted origins
+raw_cors = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,http://localhost:8080,http://frontend:80")
+cors_origins = [orig.strip() for orig in raw_cors.split(",") if orig.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -122,10 +127,29 @@ async def evaluate_legacy_alias(
     include_in_schema=False,
     summary="Legacy OCR extraction endpoint"
 )
-async def extract_text_from_file_legacy(file: UploadFile = File(...)):
-    """Provides backward-compatibility for document uploads."""
+async def extract_text_from_file_legacy(
+    file: UploadFile = File(...),
+    pipeline: DocumentPipeline = Depends(get_document_pipeline)
+):
+    """Provides backward-compatibility for document uploads using real OCR pipeline."""
+    if not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded file must have a valid filename."
+        )
+    file_bytes = await file.read()
+    if len(file_bytes) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded file is empty (0 bytes)."
+        )
+    result = await pipeline.process_document(file_bytes, file.filename)
     return {
         "filename": file.filename,
-        "extractedText": "Sample OCR extracted text from uploaded student answer sheet."
+        "extractedText": result.get("extracted_text", ""),
+        "confidence": result.get("ocr_confidence", 0.0),
+        "pageCount": result.get("page_count", 1),
+        "isDigitalPdf": result.get("is_digital_pdf", False),
+        "reviewRequired": result.get("review_required", False)
     }
 

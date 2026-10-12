@@ -54,7 +54,7 @@ spring:
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/examind}
     username: ${DATABASE_USERNAME:examind_user}
-    password: ${DATABASE_PASSWORD:examind_password}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   flyway:
     enabled: ${FLYWAY_ENABLED:true}
@@ -71,6 +71,15 @@ spring:
           batch_size: 50
         order_inserts: true
         order_updates: true
+
+jwt:
+  secret: ${JWT_SECRET}
+
+examind:
+  ai-service:
+    mock-mode: ${AI_SERVICE_MOCK_MODE:false}
+  ocr-service:
+    mock-mode: ${OCR_SERVICE_MOCK_MODE:false}
 
 ---
 # Common App Config

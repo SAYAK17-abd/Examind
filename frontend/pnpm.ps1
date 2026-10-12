@@ -6,9 +6,6 @@ param(
 
 Set-Location $PSScriptRoot
 
-# Refresh PATH from registry if needed
-$env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
-
 $nodeExe = (Get-Command node -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue)
 
 if (-not $nodeExe) {
@@ -33,10 +30,27 @@ if (-not $nodeExe) {
     exit 1
 }
 
-$viteJs = Join-Path $PSScriptRoot "node_modules\vite\bin\vite.js"
-if (Test-Path $viteJs) {
-    & $nodeExe $viteJs @Args
+$firstArg = if ($Args.Count -gt 0) { $Args[0] } else { "" }
+if ($firstArg -eq "run" -and $Args.Count -gt 1) {
+    $firstArg = $Args[1]
+}
+
+if ($firstArg -eq "test") {
+    $vitestJs = Join-Path $PSScriptRoot "node_modules\vitest\vitest.mjs"
+    & $nodeExe $vitestJs run
+} elseif ($firstArg -eq "build") {
+    $tscJs = Join-Path $PSScriptRoot "node_modules\typescript\bin\tsc"
+    $viteJs = Join-Path $PSScriptRoot "node_modules\vite\bin\vite.js"
+    & $nodeExe $tscJs -b
+    if ($LASTEXITCODE -eq 0) {
+        & $nodeExe $viteJs build
+    }
 } else {
-    Write-Error "frontend/node_modules/vite not found."
-    exit 1
+    $viteJs = Join-Path $PSScriptRoot "node_modules\vite\bin\vite.js"
+    if (Test-Path $viteJs) {
+        & $nodeExe $viteJs @Args
+    } else {
+        Write-Error "frontend/node_modules/vite not found."
+        exit 1
+    }
 }
