@@ -58,7 +58,7 @@ STEP 1: Start the Python FastAPI AI Service (Terminal 1)
 Open Terminal 1 in the project root:
 
     cd ai-service
-    python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 Wait until you see:
     "Application startup complete. Uvicorn running on http://0.0.0.0:8000"
@@ -80,7 +80,7 @@ STEP 3: Start the React + TypeScript Frontend (Terminal 3)
 Open Terminal 3 in the project root:
 
     cd frontend
-    pnpm dev
+    .\pnpm.cmd dev
 
 (Or: npm run dev)
 

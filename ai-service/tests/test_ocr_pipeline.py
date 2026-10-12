@@ -1,16 +1,23 @@
 import io
 from fastapi.testclient import TestClient
-from PIL import Image
+from PIL import Image, ImageDraw
 from app.main import app
 
 client = TestClient(app)
 
 
-def test_ocr_extract_png_image():
-    img = Image.new("RGB", (120, 60), color=(255, 255, 255))
+def create_sample_document(text: str = "Q1. Polymorphism in Object-Oriented Programming enables code reusability.", fmt="PNG") -> io.BytesIO:
+    img = Image.new("RGB", (600, 150), color=(255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    draw.text((20, 50), text, fill=(0, 0, 0))
     buf = io.BytesIO()
-    img.save(buf, format="PNG")
+    img.save(buf, format=fmt)
     buf.seek(0)
+    return buf
+
+
+def test_ocr_extract_png_image():
+    buf = create_sample_document("Q1. Polymorphism allows subclass method overriding at runtime.", fmt="PNG")
 
     response = client.post(
         "/api/v1/ocr/extract",
@@ -27,10 +34,7 @@ def test_ocr_extract_png_image():
 
 
 def test_ocr_extract_jpg_image():
-    img = Image.new("RGB", (100, 50), color=(245, 245, 245))
-    buf = io.BytesIO()
-    img.save(buf, format="JPEG")
-    buf.seek(0)
+    buf = create_sample_document("Q2. Inheritance provides hierarchical code reuse.", fmt="JPEG")
 
     response = client.post(
         "/api/v1/ocr/extract",
@@ -54,10 +58,7 @@ def test_ocr_empty_file_rejected():
 
 
 def test_ocr_legacy_endpoint_backward_compatible():
-    img = Image.new("RGB", (60, 30), color=(240, 240, 240))
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    buf.seek(0)
+    buf = create_sample_document("Scanned document test content.", fmt="JPEG")
 
     response = client.post(
         "/ocr/extract",
@@ -72,9 +73,7 @@ def test_ocr_legacy_endpoint_backward_compatible():
 
 def test_ocr_extracted_text_feeds_ai_evaluation():
     # 1. Extract text from uploaded document
-    img = Image.new("RGB", (100, 50), color=(255, 255, 255))
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
+    buf = create_sample_document("Encapsulation binds together code and data into a single unit.", fmt="PNG")
 
     ocr_resp = client.post(
         "/api/v1/ocr/extract",
@@ -100,4 +99,3 @@ def test_ocr_extracted_text_feeds_ai_evaluation():
     assert "confidence" in eval_data
     assert "feedback" in eval_data
     assert isinstance(eval_data["score"], (int, float))
-

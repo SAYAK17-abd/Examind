@@ -1,6 +1,6 @@
 import io
-from typing import Tuple
-from app.providers.ocr.base import OCRProvider
+from typing import Tuple, Union
+from app.providers.ocr.base import OCRProvider, OCRResult
 from app.core.logging import logger
 
 try:
@@ -19,7 +19,7 @@ class MockOCRProvider(OCRProvider):
     def get_provider_name(self) -> str:
         return "mock-ocr-v1"
 
-    async def extract_text(self, file_bytes: bytes, filename: str) -> Tuple[str, float]:
+    async def extract_text(self, file_bytes: bytes, filename: str) -> OCRResult:
         logger.info(f"MockOCRProvider extracting text from filename='{filename}' ({len(file_bytes)} bytes)")
 
         # If it's a PDF, extract real digital text if present
@@ -29,7 +29,12 @@ class MockOCRProvider(OCRProvider):
                 text_pages = [page.extract_text() for page in reader.pages if page.extract_text()]
                 combined_pdf_text = "\n".join(text_pages).strip()
                 if combined_pdf_text:
-                    return combined_pdf_text, 0.95
+                    return OCRResult(
+                        text=combined_pdf_text,
+                        confidence=0.95,
+                        page_count=len(reader.pages),
+                        provider=self.get_provider_name()
+                    )
             except Exception as e:
                 logger.warning(f"Failed to extract PDF text via pypdf: {e}")
 
@@ -38,5 +43,9 @@ class MockOCRProvider(OCRProvider):
             "Polymorphism allows objects to be treated as instances of their parent class. "
             "In Java, this is demonstrated via method overriding at runtime and method overloading at compile time."
         )
-        return extracted_sample, 0.88
-
+        return OCRResult(
+            text=extracted_sample,
+            confidence=0.88,
+            page_count=1,
+            provider=self.get_provider_name()
+        )

@@ -50,9 +50,19 @@ public class TeacherExamController {
             @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
 
         Sort sortOrder = Sort.by(Sort.Direction.DESC, "createdAt");
-        if (sort != null && sort.length > 0 && sort[0].contains(",")) {
-            String[] parts = sort[0].split(",");
-            sortOrder = Sort.by(Sort.Direction.fromString(parts[1]), parts[0]);
+        if (sort != null && sort.length > 0) {
+            try {
+                if (sort[0].contains(",")) {
+                    String[] parts = sort[0].split(",");
+                    sortOrder = Sort.by(Sort.Direction.fromString(parts[1].trim()), parts[0].trim());
+                } else if (sort.length >= 2) {
+                    sortOrder = Sort.by(Sort.Direction.fromString(sort[1].trim()), sort[0].trim());
+                } else if (!sort[0].trim().isEmpty()) {
+                    sortOrder = Sort.by(Sort.Direction.DESC, sort[0].trim());
+                }
+            } catch (Exception ignored) {
+                sortOrder = Sort.by(Sort.Direction.DESC, "createdAt");
+            }
         }
         Pageable pageable = PageRequest.of(page, size, sortOrder);
 

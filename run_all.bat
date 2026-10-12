@@ -5,7 +5,7 @@ echo Starting EXAMIND Full Platform (AI Service + Backend + Frontend)
 echo ===============================================================================
 
 echo [1/3] Starting Python FastAPI AI Service on port 8000...
-start "EXAMIND - Python AI Service (Port 8000)" cmd /k "cd /d "%~dp0ai-service" && python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+start "EXAMIND - Python AI Service (Port 8000)" cmd /k "cd /d "%~dp0ai-service" && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 echo [2/3] Starting Spring Boot Backend on port 8080...
 start "EXAMIND - Spring Boot Backend (Port 8080)" cmd /k "cd /d "%~dp0" && mvnw.cmd spring-boot:run"
