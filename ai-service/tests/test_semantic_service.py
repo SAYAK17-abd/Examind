@@ -1,6 +1,12 @@
+import pytest
 from app.services.semantic_service import get_semantic_service
+from app.models.embeddings import HAS_SENTENCE_TRANSFORMERS
 
 
+@pytest.mark.skipif(
+    not HAS_SENTENCE_TRANSFORMERS,
+    reason="Paraphrase detection requires a real embedding model (sentence-transformers)"
+)
 def test_paraphrased_answer_high_semantic_similarity():
     service = get_semantic_service()
     ref = "Polymorphism allows the same interface to represent different underlying forms through method overriding and overloading."
