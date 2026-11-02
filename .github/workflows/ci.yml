@@ -88,7 +88,7 @@ jobs:
 
       - name: Run Frontend Tests
         working-directory: frontend
-        run: pnpm test run
+        run: pnpm test
 
       - name: Typecheck and Build
         working-directory: frontend
