@@ -52,7 +52,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/examind}
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:jdbc:postgresql://localhost:5432/examind}}
     username: ${DATABASE_USERNAME:examind_user}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -60,6 +60,9 @@ spring:
     enabled: ${FLYWAY_ENABLED:true}
     baseline-on-migrate: true
     locations: classpath:db/migration
+    url: ${FLYWAY_URL:${SPRING_DATASOURCE_URL_UNPOOLED:${SPRING_DATASOURCE_URL:${DATABASE_URL}}}}
+    user: ${DATABASE_USERNAME:examind_user}
+    password: ${DATABASE_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:

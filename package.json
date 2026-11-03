@@ -1,0 +1,14 @@
+{
+  "name": "examind",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && node ./node_modules/typescript/bin/tsc -b && node ./node_modules/vite/bin/vite.js build"
+  },
+  "dependencies": {
+    "@neon/config": "^1.10.0",
+    "@neon/env": "^1.6.8"
+  },
+  "devDependencies": {
+    "pg": "^8.23.1"
+  }
+}
