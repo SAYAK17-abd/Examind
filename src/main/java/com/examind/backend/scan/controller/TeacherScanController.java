@@ -82,7 +82,7 @@ public class TeacherScanController {
             count++;
         }
 
-        auditService.log(SecurityUtils.getCurrentUserId(), AuditAction.SUBMISSION_CREATED, "SCAN_BATCH",
+        auditService.log(SecurityUtils.getCurrentUserId(), AuditAction.SCAN_UPLOADED, "SCAN_BATCH",
                 String.valueOf(examId), "Uploaded " + files.size() + " scanned exam copies for exam " + examId, servletRequest);
 
         List<ScanResultResponse> responses = savedList.stream().map(ScanResultResponse::fromEntity).toList();
@@ -123,7 +123,7 @@ public class TeacherScanController {
 
         ScanResult updated = scanResultRepository.save(scan);
 
-        auditService.log(SecurityUtils.getCurrentUserId(), AuditAction.EVALUATION_UPDATED, "SCAN_RESULT",
+        auditService.log(SecurityUtils.getCurrentUserId(), AuditAction.SCAN_VERIFIED, "SCAN_RESULT",
                 String.valueOf(resultId), "Teacher verified scanned exam sheet " + resultId, servletRequest);
 
         return ResponseEntity.ok(ApiResponse.success(ScanResultResponse.fromEntity(updated), "Scan verified successfully"));

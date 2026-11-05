@@ -11,6 +11,7 @@ public interface ScanResultRepository extends JpaRepository<ScanResult, Long> {
 
     List<ScanResult> findByExam_IdOrderByCreatedAtDesc(Long examId);
 
+    List<ScanResult> findByExamIdOrderByCreatedAtDesc(Long examId);
+
     long countByExam_IdAndRequiresReviewTrue(Long examId);
 }
-
