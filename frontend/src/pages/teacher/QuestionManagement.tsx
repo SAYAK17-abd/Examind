@@ -646,7 +646,7 @@ export const QuestionManagement: React.FC = () => {
         }}
         title="AI Question Paper Ingestion & Error Audit"
         description="Upload handwritten test sheets or PDF copies. The AI automatically parses questions and detects missing marks or ambiguities."
-        maxWidth="3xl"
+        maxWidth="4xl"
       >
         <div className="space-y-5">
           {!auditReport ? (

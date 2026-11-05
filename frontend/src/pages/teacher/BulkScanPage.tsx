@@ -45,9 +45,10 @@ export const BulkScanPage: React.FC = () => {
   useEffect(() => {
     const fetchExams = async () => {
       try {
-        const list = await teacherService.getExams();
-        setExams(list || []);
-        if (!selectedExamId && list && list.length > 0) {
+        const paged = await teacherService.getExams();
+        const list = paged?.content || [];
+        setExams(list);
+        if (!selectedExamId && list.length > 0) {
           setSelectedExamId(list[0].id);
         }
       } catch (err) {
