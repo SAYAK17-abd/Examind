@@ -114,12 +114,16 @@ export const ExamForm: React.FC = () => {
         ]}
       />
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-br from-[#0B101D] via-[#0F172A] to-[#070B14] border border-slate-800 shadow-xl">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 text-xs font-bold text-amber-300 border border-amber-400/25 mb-2">
+            <Layers className="w-3.5 h-3.5 text-amber-400" />
+            {isEditing ? 'Update Configuration' : 'Exam Setup Wizard'}
+          </span>
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
             {isEditing ? 'Edit Examination' : 'Create New Examination'}
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs md:text-sm text-slate-300 mt-1">
             Configure examination schedule, time limit, and scoring requirements.
           </p>
         </div>
@@ -127,15 +131,15 @@ export const ExamForm: React.FC = () => {
           variant="outline"
           size="sm"
           onClick={() => navigate('/teacher/exams')}
-          leftIcon={<ArrowLeft className="w-4 h-4" />}
+          leftIcon={<ArrowLeft className="w-4 h-4 text-slate-400" />}
         >
           Back to Exams
         </Button>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card className="p-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="banger-card p-8 space-y-6 rounded-3xl bg-[#0B101D] border border-slate-800 shadow-xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="md:col-span-2">
               <Input
                 label="Examination Title"
@@ -209,7 +213,7 @@ export const ExamForm: React.FC = () => {
             />
           </div>
 
-          <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+          <div className="pt-6 border-t border-slate-800 flex items-center justify-between">
             <Button
               type="button"
               variant="outline"
@@ -227,7 +231,7 @@ export const ExamForm: React.FC = () => {
               {isEditing ? 'Save Changes' : 'Create & Proceed to Questions'}
             </Button>
           </div>
-        </Card>
+        </div>
       </form>
     </div>
   );

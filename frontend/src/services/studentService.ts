@@ -87,6 +87,21 @@ export const studentService = {
     return res.data.data;
   },
 
+  async getMyPerformance(): Promise<StudentPerformanceResponse> {
+    try {
+      const res = await apiClient.get<ApiResponse<StudentPerformanceResponse>>('/api/student/performance');
+      return res.data.data;
+    } catch {
+      return {
+        studentId: 0,
+        totalExamsTaken: 0,
+        averagePercentage: 0,
+        strongTopics: [],
+        weakTopics: [],
+      };
+    }
+  },
+
   // Note: if student insights uses a dedicated endpoint or teacher performance endpoint by student id:
   async getStudentPerformance(studentId: number): Promise<StudentPerformanceResponse> {
     try {

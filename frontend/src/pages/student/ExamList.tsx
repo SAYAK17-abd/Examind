@@ -51,10 +51,14 @@ export const ExamList: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-150">
       <Breadcrumb items={[{ label: 'Student Dashboard', path: '/student' }, { label: 'My Exams' }]} />
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-br from-[#0B101D] via-[#0F172A] to-[#070B14] border border-slate-800 shadow-xl">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Available Examinations</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 text-xs font-bold text-amber-300 border border-amber-400/25 mb-2">
+            <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+            Curriculum Assessments
+          </span>
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">Available Examinations</h1>
+          <p className="text-xs md:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
             View scheduled tests, inspect exam requirements, and start your exam session.
           </p>
         </div>
@@ -67,7 +71,7 @@ export const ExamList: React.FC = () => {
             placeholder="Search exams by title or topic..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            leftIcon={<Search className="w-4 h-4" />}
+            leftIcon={<Search className="w-4 h-4 text-slate-400" />}
           />
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
@@ -76,10 +80,10 @@ export const ExamList: React.FC = () => {
               key={sub}
               type="button"
               onClick={() => setSubjectFilter(sub)}
-              className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 subjectFilter === sub
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-md shadow-amber-500/20'
+                  : 'bg-[#0B101D] border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
               }`}
             >
               {sub}
@@ -99,10 +103,10 @@ export const ExamList: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredExams.map((exam) => (
-            <Card key={exam.id} hover className="flex flex-col justify-between overflow-hidden">
+            <div key={exam.id} className="banger-card rounded-3xl overflow-hidden border border-slate-800 bg-[#0B101D] flex flex-col justify-between shadow-xl">
               <div className="p-6 space-y-4">
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-[11px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-lg">
+                  <span className="text-[11px] font-bold text-amber-300 bg-amber-400/10 border border-amber-400/25 px-2.5 py-1 rounded-lg">
                     {exam.subject}
                   </span>
                   <Badge
@@ -115,31 +119,31 @@ export const ExamList: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-base text-slate-900 line-clamp-1">{exam.title}</h3>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                  <h3 className="font-bold text-base text-white line-clamp-1">{exam.title}</h3>
+                  <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
                     {exam.description || 'No specific description provided for this examination.'}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 pt-2 text-xs text-slate-600 border-t border-slate-100">
+                <div className="grid grid-cols-2 gap-3 pt-3 text-xs text-slate-300 border-t border-slate-800/80">
                   <div className="flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-slate-400" />
-                    <span>{exam.durationMinutes} minutes</span>
+                    <Clock className="w-4 h-4 text-amber-400" />
+                    <span>{exam.durationMinutes} mins</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Award className="w-4 h-4 text-slate-400" />
-                    <span>{exam.totalMarks} Total Marks</span>
+                  <div className="flex items-center gap-1.5 font-mono">
+                    <Award className="w-4 h-4 text-amber-400" />
+                    <span className="text-amber-300 font-semibold">{exam.totalMarks} Marks</span>
                   </div>
                   <div className="flex items-center gap-1.5 col-span-2 text-[11px] text-slate-400">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
                     <span>Start: {formatDateTime(exam.startTime)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500">
-                  Pass: {exam.passingMarks} marks
+              <div className="p-4 bg-[#070B14] border-t border-slate-800 flex items-center justify-between">
+                <span className="text-xs font-semibold text-slate-400">
+                  Pass: <strong className="text-emerald-400">{exam.passingMarks}</strong> marks
                 </span>
                 <Button
                   variant="primary"
@@ -150,7 +154,7 @@ export const ExamList: React.FC = () => {
                   View Rules & Start
                 </Button>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       )}

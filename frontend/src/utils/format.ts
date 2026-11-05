@@ -20,14 +20,14 @@ export function getConfidenceBadgeColor(confidence?: number | null): {
   label: string;
 } {
   if (confidence === undefined || confidence === null) {
-    return { bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-300', label: 'N/A' };
+    return { bg: 'bg-slate-800', text: 'text-slate-400', border: 'border-slate-700', label: 'N/A' };
   }
   const pct = confidence > 1 ? confidence : Math.round(confidence * 100);
   if (pct >= 85) {
-    return { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', label: `${pct}% High` };
+    return { bg: 'bg-emerald-500/15', text: 'text-emerald-400', border: 'border-emerald-500/30', label: `${pct}% High` };
   }
   if (pct >= 65) {
-    return { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', label: `${pct}% Moderate` };
+    return { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-500/30', label: `${pct}% Moderate` };
   }
-  return { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', label: `${pct}% Low` };
+  return { bg: 'bg-rose-500/15', text: 'text-rose-400', border: 'border-rose-500/30', label: `${pct}% Low` };
 }

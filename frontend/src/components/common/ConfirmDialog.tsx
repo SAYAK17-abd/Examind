@@ -27,9 +27,9 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   isLoading = false,
 }) => {
   const icons = {
-    danger: <AlertCircle className="w-6 h-6 text-rose-600" />,
-    warning: <AlertTriangle className="w-6 h-6 text-amber-600" />,
-    primary: <Info className="w-6 h-6 text-indigo-600" />,
+    danger: <AlertCircle className="w-6 h-6 text-rose-400" />,
+    warning: <AlertTriangle className="w-6 h-6 text-amber-400" />,
+    primary: <Info className="w-6 h-6 text-amber-300" />,
   };
 
   const buttonVariants = {
@@ -41,9 +41,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="sm">
       <div className="flex flex-col items-center text-center">
-        <div className="p-3 bg-slate-100 rounded-full mb-3">{icons[variant]}</div>
-        <h4 className="text-base font-bold text-slate-900 mb-1">{title}</h4>
-        <p className="text-sm text-slate-600 mb-6">{message}</p>
+        <div className="p-3.5 bg-slate-800/80 border border-slate-700/80 rounded-2xl mb-3 shadow-inner">
+          {icons[variant]}
+        </div>
+        <h4 className="text-base font-black text-white mb-1.5">{title}</h4>
+        <p className="text-xs text-slate-300 mb-6 leading-relaxed">{message}</p>
         <div className="flex items-center gap-3 w-full">
           <Button
             type="button"

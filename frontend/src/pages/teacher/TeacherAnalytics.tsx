@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { teacherService } from '../../services/teacherService';
 import {
   ExamResponse,
@@ -25,6 +25,10 @@ import {
   AlertTriangle,
   Sparkles,
   HelpCircle,
+  Layers,
+  ArrowRight,
+  Plus,
+  ShieldAlert,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -39,6 +43,7 @@ import {
 
 export const TeacherAnalytics: React.FC = () => {
   const { examId } = useParams<{ examId?: string }>();
+  const navigate = useNavigate();
   const toast = useToast();
 
   const [exams, setExams] = useState<ExamResponse[]>([]);
@@ -62,9 +67,12 @@ export const TeacherAnalytics: React.FC = () => {
         setExams(list);
         if (!selectedExamId && list.length > 0) {
           setSelectedExamId(list[0].id);
+        } else if (list.length === 0) {
+          setLoading(false);
         }
       } catch (err) {
         toast.error(extractErrorMessage(err), 'Failed to load exam list');
+        setLoading(false);
       }
     };
 
@@ -72,7 +80,10 @@ export const TeacherAnalytics: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!selectedExamId) return;
+    if (!selectedExamId) {
+      setLoading(false);
+      return;
+    }
 
     const loadData = async () => {
       try {
@@ -118,8 +129,8 @@ export const TeacherAnalytics: React.FC = () => {
         { range: '0-20', students: 1 },
         { range: '21-40', students: 3 },
         { range: '41-60', students: 8 },
-        { range: '61-80', students: 15 },
-        { range: '81-100', students: 11 },
+        { range: '61-80', students: 14 },
+        { range: '81-100', students: 6 },
       ];
 
   const gradeDistData = analytics?.gradeDistribution
@@ -136,7 +147,7 @@ export const TeacherAnalytics: React.FC = () => {
       ];
 
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-150">
+    <div className="space-y-6 pb-16 animate-in fade-in duration-150">
       <Breadcrumb
         items={[
           { label: 'Teacher Dashboard', path: '/teacher' },
@@ -144,27 +155,32 @@ export const TeacherAnalytics: React.FC = () => {
         ]}
       />
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Header Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-br from-[#0B101D] via-[#0F172A] to-[#070B14] border border-slate-800 shadow-xl">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 text-xs font-bold text-amber-300 border border-amber-400/25 mb-2">
+            <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
+            Class Performance Engine
+          </span>
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
             Class Analytics & Similarity
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs md:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
             Statistical score distributions, question difficulty metrics, and cross-submission similarity detection.
           </p>
         </div>
 
         {/* Exam Selector */}
         {exams.length > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-600 whitespace-nowrap">Exam:</span>
+          <div className="flex items-center gap-2.5 bg-[#060913] p-2 rounded-2xl border border-slate-800 self-start sm:self-center">
+            <span className="text-xs font-bold text-slate-400 pl-2 whitespace-nowrap">Exam:</span>
             <select
               value={selectedExamId}
               onChange={(e) => setSelectedExamId(Number(e.target.value))}
-              className="text-xs font-semibold rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="text-xs font-bold rounded-xl border border-slate-700 bg-[#0B101D] px-3.5 py-2 text-white focus:outline-none focus:border-amber-400 transition"
             >
               {exams.map((exam) => (
-                <option key={exam.id} value={exam.id}>
+                <option key={exam.id} value={exam.id} className="bg-[#0B101D] text-white">
                   {exam.title} ({exam.subject})
                 </option>
               ))}
@@ -174,189 +190,190 @@ export const TeacherAnalytics: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
-        <button
-          onClick={() => setActiveTab('analytics')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'analytics'
-              ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
-              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-          }`}
-        >
-          <BarChart3 className="w-4 h-4" />
-          <span>Class Performance & Questions</span>
-        </button>
+      {exams.length > 0 && (
+        <div className="flex items-center gap-2.5 border-b border-slate-800 pb-3">
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'analytics'
+                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-lg shadow-amber-500/20'
+                : 'bg-[#0B101D] border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            <span>Class Performance & Questions</span>
+          </button>
 
-        <button
-          onClick={() => setActiveTab('similarity')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === 'similarity'
-              ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
-              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-          }`}
-        >
-          <Copy className="w-4 h-4" />
-          <span>Similarity & Plagiarism Check</span>
-          {similarityReport?.flaggedCount ? (
-            <span className="bg-rose-500 text-white px-1.5 py-0.2 rounded-full text-[10px]">
-              {similarityReport.flaggedCount}
-            </span>
-          ) : null}
-        </button>
-      </div>
+          <button
+            onClick={() => setActiveTab('similarity')}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'similarity'
+                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-lg shadow-amber-500/20'
+                : 'bg-[#0B101D] border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <Copy className="w-4 h-4" />
+            <span>Similarity & Plagiarism Check</span>
+            {similarityReport?.flaggedCount ? (
+              <span className="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black">
+                {similarityReport.flaggedCount}
+              </span>
+            ) : null}
+          </button>
+        </div>
+      )}
 
       {loading ? (
-        <LoadingSpinner size="lg" label="Computing class statistics..." className="py-20" />
+        <LoadingSpinner size="lg" label="Computing class performance & analytics..." className="py-20" />
+      ) : exams.length === 0 ? (
+        <div className="banger-card p-10 rounded-3xl border border-slate-800 text-center bg-[#0B101D] space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-amber-400/10 text-amber-400 border border-amber-400/20 flex items-center justify-center mx-auto">
+            <BarChart3 className="w-7 h-7" />
+          </div>
+          <div className="max-w-md mx-auto space-y-1.5">
+            <h3 className="text-lg font-black text-white">No Examinations To Analyze</h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Create an examination and collect student submissions to generate statistical score distributions, difficulty indexes, and lexical similarity maps.
+            </p>
+          </div>
+          <Button
+            variant="primary"
+            onClick={() => navigate('/teacher/exams/new')}
+            leftIcon={<Plus className="w-4 h-4" />}
+          >
+            Create Your First Exam
+          </Button>
+        </div>
       ) : activeTab === 'analytics' ? (
         <div className="space-y-6">
           {/* Key KPI Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            <Card>
-              <CardContent className="p-4 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Submissions
-                </span>
-                <div className="text-xl font-black text-slate-900">
-                  {analytics?.totalSubmissions ?? 0}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="banger-card p-4 rounded-2xl bg-[#0B101D] border border-slate-800 space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                Submissions
+              </span>
+              <div className="text-2xl font-black text-white">
+                {analytics?.totalSubmissions ?? 0}
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="p-4 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Average Score
-                </span>
-                <div className="text-xl font-black text-indigo-600">
-                  {analytics?.averageScore ? `${Math.round(analytics.averageScore * 10) / 10}` : '—'}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="banger-card p-4 rounded-2xl bg-[#0B101D] border border-slate-800 space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                Average Score
+              </span>
+              <div className="text-2xl font-black text-amber-300 font-mono">
+                {analytics?.averageScore ? `${Math.round(analytics.averageScore * 10) / 10}` : '—'}
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="p-4 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Median Score
-                </span>
-                <div className="text-xl font-black text-slate-900">
-                  {analytics?.medianScore ?? '—'}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="banger-card p-4 rounded-2xl bg-[#0B101D] border border-slate-800 space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                Median Score
+              </span>
+              <div className="text-2xl font-black text-white font-mono">
+                {analytics?.medianScore ?? '—'}
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="p-4 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Highest Score
-                </span>
-                <div className="text-xl font-black text-emerald-600">
-                  {analytics?.highestScore ?? '—'}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="banger-card p-4 rounded-2xl bg-[#0B101D] border border-slate-800 space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                Highest Score
+              </span>
+              <div className="text-2xl font-black text-emerald-400 font-mono">
+                {analytics?.highestScore ?? '—'}
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="p-4 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Lowest Score
-                </span>
-                <div className="text-xl font-black text-rose-600">
-                  {analytics?.lowestScore ?? '—'}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="banger-card p-4 rounded-2xl bg-[#0B101D] border border-slate-800 space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                Lowest Score
+              </span>
+              <div className="text-2xl font-black text-rose-400 font-mono">
+                {analytics?.lowestScore ?? '—'}
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="p-4 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Pass Rate
-                </span>
-                <div className="text-xl font-black text-purple-600">
-                  {analytics?.passPercentage ? `${Math.round(analytics.passPercentage)}%` : '—'}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="banger-card p-4 rounded-2xl bg-[#0B101D] border border-slate-800 space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                Pass Rate
+              </span>
+              <div className="text-2xl font-black text-amber-400 font-mono">
+                {analytics?.passPercentage ? `${Math.round(analytics.passPercentage)}%` : '—'}
+              </div>
+            </div>
           </div>
 
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Score Distribution */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-bold flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-indigo-600" />
-                  <span>Score Distribution Range</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="h-64 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={scoreDistData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                      <XAxis dataKey="range" tick={{ fontSize: 11, fill: '#64748b' }} />
-                      <YAxis tick={{ fontSize: 11, fill: '#64748b' }} />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#ffffff',
-                          borderRadius: '0.75rem',
-                          border: '1px solid #e2e8f0',
-                          fontSize: '12px',
-                        }}
-                      />
-                      <Bar dataKey="students" fill="#4f46e5" radius={[6, 6, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="banger-card p-6 rounded-3xl bg-[#0B101D] border border-slate-800 space-y-4">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-amber-400" />
+                <h3 className="text-sm font-bold text-white">Score Distribution Range</h3>
+              </div>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={scoreDistData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                    <XAxis dataKey="range" tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                    <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#0B101D',
+                        borderRadius: '0.75rem',
+                        border: '1px solid #1e293b',
+                        color: '#ffffff',
+                        fontSize: '12px',
+                      }}
+                    />
+                    <Bar dataKey="students" fill="#f59e0b" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
 
             {/* Grade Distribution */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-bold flex items-center gap-2">
-                  <Award className="w-4 h-4 text-indigo-600" />
-                  <span>Grade Breakdown</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="h-64 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={gradeDistData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                      <XAxis dataKey="grade" tick={{ fontSize: 11, fill: '#64748b' }} />
-                      <YAxis tick={{ fontSize: 11, fill: '#64748b' }} />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#ffffff',
-                          borderRadius: '0.75rem',
-                          border: '1px solid #e2e8f0',
-                          fontSize: '12px',
-                        }}
-                      />
-                      <Bar dataKey="students" fill="#10b981" radius={[6, 6, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="banger-card p-6 rounded-3xl bg-[#0B101D] border border-slate-800 space-y-4">
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-sm font-bold text-white">Grade Breakdown</h3>
+              </div>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={gradeDistData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                    <XAxis dataKey="grade" tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                    <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#0B101D',
+                        borderRadius: '0.75rem',
+                        border: '1px solid #1e293b',
+                        color: '#ffffff',
+                        fontSize: '12px',
+                      }}
+                    />
+                    <Bar dataKey="students" fill="#10b981" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
 
           {/* Question-by-Question Difficulty & Concept Gaps */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-bold flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-indigo-600" />
-                <span>Question-Level Difficulty & Conceptual Gaps</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 overflow-x-auto">
+          <div className="banger-card rounded-3xl overflow-hidden border border-slate-800 bg-[#0B101D] shadow-xl">
+            <div className="p-5 border-b border-slate-800 flex items-center gap-2 bg-[#070B14]">
+              <HelpCircle className="w-4 h-4 text-amber-400" />
+              <h3 className="text-sm font-bold text-white">Question-Level Difficulty & Conceptual Gaps</h3>
+            </div>
+            <div className="p-0 overflow-x-auto">
               {questionAnalysis.length === 0 ? (
                 <div className="p-8 text-center text-xs text-slate-400">
                   Question analysis will appear once submissions are evaluated.
                 </div>
               ) : (
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px]">
+                  <thead className="bg-[#070B14] border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
                     <tr>
                       <th className="p-4 pl-6">Question</th>
                       <th className="p-4">Average Score</th>
@@ -365,50 +382,50 @@ export const TeacherAnalytics: React.FC = () => {
                       <th className="p-4 pr-6">Common Missing Concepts</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-800/60">
                     {questionAnalysis.map((qa, idx) => (
-                      <tr key={qa.questionId || idx} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="p-4 pl-6 font-semibold text-slate-900">
+                      <tr key={qa.questionId || idx} className="hover:bg-slate-800/40 transition-colors">
+                        <td className="p-4 pl-6 font-semibold text-white">
                           <div>
-                            <span>Q{qa.questionNumber || idx + 1}</span>
-                            <p className="text-[11px] text-slate-500 font-normal line-clamp-1 max-w-sm mt-0.5">
+                            <span className="font-bold text-amber-300">Q{qa.questionNumber || idx + 1}</span>
+                            <p className="text-[11px] text-slate-400 font-normal line-clamp-1 max-w-sm mt-0.5">
                               {qa.questionText}
                             </p>
                           </div>
                         </td>
-                        <td className="p-4 font-bold text-slate-800">
+                        <td className="p-4 font-mono font-bold text-white">
                           {qa.averageScore} / {qa.maxMarks} pts
                         </td>
-                        <td className="p-4 font-semibold text-indigo-600">
+                        <td className="p-4 font-bold text-amber-400 font-mono">
                           {Math.round(qa.averagePercentage)}%
                         </td>
                         <td className="p-4">
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                               qa.averagePercentage >= 75
-                                ? 'bg-emerald-50 text-emerald-700'
+                                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25'
                                 : qa.averagePercentage >= 50
-                                ? 'bg-amber-50 text-amber-700'
-                                : 'bg-rose-50 text-rose-700'
+                                ? 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
+                                : 'bg-rose-500/15 text-rose-400 border border-rose-500/25'
                             }`}
                           >
                             {qa.difficultyRating || (qa.averagePercentage < 50 ? 'Challenging' : 'Normal')}
                           </span>
                         </td>
-                        <td className="p-4 pr-6 text-slate-600">
+                        <td className="p-4 pr-6 text-slate-300">
                           {qa.commonMissingConcepts && qa.commonMissingConcepts.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {qa.commonMissingConcepts.map((c, cIdx) => (
                                 <span
                                   key={cIdx}
-                                  className="px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 text-[10px]"
+                                  className="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px]"
                                 >
                                   {c}
                                 </span>
                               ))}
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic">None</span>
+                            <span className="text-slate-500 italic">None</span>
                           )}
                         </td>
                       </tr>
@@ -416,22 +433,22 @@ export const TeacherAnalytics: React.FC = () => {
                   </tbody>
                 </table>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       ) : (
         /* Similarity & Plagiarism Tab */
         <div className="space-y-6">
-          <Card className="p-6 bg-slate-900 text-white rounded-3xl space-y-4">
+          <div className="banger-card p-6 bg-[#0B101D] text-white rounded-3xl border border-slate-800 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="text-[11px] font-bold text-indigo-300 uppercase tracking-wider block">
+                <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">
                   AI Cross-Submission Verification
                 </span>
-                <h3 className="text-lg font-bold text-white mt-1">
+                <h3 className="text-lg font-black text-white mt-1">
                   Semantic & Lexical Code Similarity Detection
                 </h3>
-                <p className="text-xs text-slate-300 mt-1 max-w-xl">
+                <p className="text-xs text-slate-300 mt-1 max-w-xl leading-relaxed">
                   Scans all pairwise student submissions across code and descriptive solutions to detect unauthorized
                   collaboration and high textual overlap.
                 </p>
@@ -445,36 +462,38 @@ export const TeacherAnalytics: React.FC = () => {
                 Execute Similarity Scan
               </Button>
             </div>
-          </Card>
+          </div>
 
           {similarityReport?.pairs && similarityReport.pairs.length > 0 ? (
-            <Card className="overflow-hidden">
-              <CardHeader className="bg-slate-50/70 p-5 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-bold flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-500" />
-                  <span>Flagged Similar Submission Pairs ({similarityReport.pairs.length})</span>
-                </CardTitle>
+            <div className="banger-card rounded-3xl overflow-hidden border border-slate-800 bg-[#0B101D] shadow-xl">
+              <div className="bg-[#070B14] p-5 border-b border-slate-800 flex flex-row items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-amber-400" />
+                  <span className="text-sm font-bold text-white">
+                    Flagged Similar Submission Pairs ({similarityReport.pairs.length})
+                  </span>
+                </div>
                 <span className="text-[11px] text-slate-400">
                   Last checked: {similarityReport.generatedAt || 'Recent'}
                 </span>
-              </CardHeader>
-              <CardContent className="p-0 divide-y divide-slate-100">
+              </div>
+              <div className="p-0 divide-y divide-slate-800/60">
                 {similarityReport.pairs.map((pair, idx) => (
-                  <div key={idx} className="p-5 space-y-3 hover:bg-slate-50/70 transition-colors">
+                  <div key={idx} className="p-5 space-y-3 hover:bg-slate-800/40 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-slate-900">
+                        <span className="text-xs font-bold text-white">
                           {pair.student1Name} & {pair.student2Name}
                         </span>
-                        <span className="text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                        <span className="text-[11px] text-slate-400 bg-slate-800 border border-slate-700/80 px-2 py-0.5 rounded">
                           Question #{pair.questionNumber}
                         </span>
                       </div>
                       <span
-                        className={`text-xs font-black px-2.5 py-1 rounded-full border ${
+                        className={`text-xs font-mono font-black px-2.5 py-1 rounded-full border ${
                           pair.similarityScore >= 0.8
-                            ? 'bg-rose-50 text-rose-700 border-rose-300'
-                            : 'bg-amber-50 text-amber-700 border-amber-300'
+                            ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                            : 'bg-amber-500/15 text-amber-400 border-amber-500/30'
                         }`}
                       >
                         {Math.round(pair.similarityScore * 100)}% Similarity
@@ -483,14 +502,14 @@ export const TeacherAnalytics: React.FC = () => {
 
                     {(pair.snippet1 || pair.snippet2) && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
-                        <div className="p-3 bg-slate-100/70 rounded-xl font-mono text-slate-800 whitespace-pre-wrap">
-                          <span className="font-sans font-bold text-slate-500 block mb-1">
+                        <div className="p-3 bg-[#070B14] border border-slate-800 rounded-xl font-mono text-slate-200 whitespace-pre-wrap">
+                          <span className="font-sans font-bold text-slate-400 block mb-1">
                             {pair.student1Name} Excerpt:
                           </span>
                           {pair.snippet1}
                         </div>
-                        <div className="p-3 bg-slate-100/70 rounded-xl font-mono text-slate-800 whitespace-pre-wrap">
-                          <span className="font-sans font-bold text-slate-500 block mb-1">
+                        <div className="p-3 bg-[#070B14] border border-slate-800 rounded-xl font-mono text-slate-200 whitespace-pre-wrap">
+                          <span className="font-sans font-bold text-slate-400 block mb-1">
                             {pair.student2Name} Excerpt:
                           </span>
                           {pair.snippet2}
@@ -499,8 +518,8 @@ export const TeacherAnalytics: React.FC = () => {
                     )}
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ) : (
             <EmptyState
               icon={CheckCircle2}

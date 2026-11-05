@@ -228,18 +228,18 @@ export const ExamInterface: React.FC = () => {
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-150">
       {/* Top Floating Exam Control Bar */}
-      <div className="sticky top-20 z-20 flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-slate-200/90 shadow-md backdrop-blur-md">
+      <div className="sticky top-20 z-20 flex flex-wrap items-center justify-between gap-4 p-4 rounded-3xl bg-[#0B101D] border border-slate-800 shadow-2xl backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-50 text-indigo-700 rounded-xl">
+          <div className="p-2.5 bg-amber-400/10 text-amber-400 border border-amber-400/20 rounded-2xl">
             <FileText className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900 leading-tight">
+            <h2 className="text-sm font-bold text-white leading-tight">
               {submission.examTitle}
             </h2>
-            <div className="flex items-center gap-3 mt-0.5">
+            <div className="flex items-center gap-3 mt-1">
               <AutosaveIndicator state={saveState} lastSavedAt={lastSavedAt} />
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[11px] text-slate-400 font-mono">
                 Question {currentIdx + 1} of {questions.length}
               </span>
             </div>
@@ -270,18 +270,18 @@ export const ExamInterface: React.FC = () => {
         {/* Left: Current Question & Workspace (3 cols) */}
         <div className="lg:col-span-3 space-y-6">
           {currentQuestion && (
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 shadow-sm space-y-6">
+            <div className="banger-card bg-[#0B101D] rounded-3xl border border-slate-800 p-6 md:p-8 shadow-xl space-y-6">
               {/* Question Header */}
-              <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-800 pb-5">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-black uppercase text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">
+                    <span className="text-xs font-black uppercase text-amber-300 bg-amber-400/10 border border-amber-400/25 px-2.5 py-1 rounded-lg">
                       Question {currentIdx + 1}
                     </span>
-                    <span className="text-xs font-semibold text-slate-500 uppercase bg-slate-100 px-2 py-0.5 rounded">
+                    <span className="text-xs font-semibold text-slate-300 uppercase bg-slate-800 border border-slate-700/80 px-2 py-0.5 rounded-md">
                       {currentQuestion.type}
                     </span>
-                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                    <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-0.5 rounded-md font-mono">
                       {currentQuestion.marks} Marks
                     </span>
                   </div>
@@ -292,8 +292,8 @@ export const ExamInterface: React.FC = () => {
                   onClick={() => toggleFlag(currentIdx)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                     flaggedIndices.has(currentIdx)
-                      ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
-                      : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20'
+                      : 'border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
                 >
                   <Bookmark className="w-3.5 h-3.5" />
@@ -302,7 +302,7 @@ export const ExamInterface: React.FC = () => {
               </div>
 
               {/* Question Prompt */}
-              <div className="text-sm md:text-base font-semibold text-slate-800 leading-relaxed">
+              <div className="text-sm md:text-base font-semibold text-white leading-relaxed">
                 {currentQuestion.questionText}
               </div>
 
@@ -310,7 +310,7 @@ export const ExamInterface: React.FC = () => {
               <div className="pt-2 space-y-4">
                 {currentQuestion.type === 'MCQ' && currentQuestion.options ? (
                   <div className="space-y-2.5">
-                    <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
                       Select Answer:
                     </label>
                     <div className="grid grid-cols-1 gap-2.5">
@@ -323,15 +323,15 @@ export const ExamInterface: React.FC = () => {
                             onClick={() => handleAnswerChange(opt)}
                             className={`flex items-center gap-3 p-4 rounded-2xl border text-left text-xs md:text-sm font-medium transition-all ${
                               isSelected
-                                ? 'border-indigo-600 bg-indigo-50/70 text-indigo-900 ring-2 ring-indigo-500/20'
-                                : 'border-slate-200 hover:border-slate-300 bg-white text-slate-700'
+                                ? 'border-amber-400 bg-amber-400/15 text-amber-200 ring-2 ring-amber-400/30'
+                                : 'border-slate-800 hover:border-slate-700 bg-[#070B14] text-slate-300'
                             }`}
                           >
                             <span
                               className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
                                 isSelected
-                                  ? 'bg-indigo-600 text-white'
-                                  : 'bg-slate-100 text-slate-600'
+                                  ? 'bg-amber-400 text-slate-950 font-black'
+                                  : 'bg-slate-800 text-slate-400'
                               }`}
                             >
                               {String.fromCharCode(65 + optIdx)}
@@ -345,10 +345,10 @@ export const ExamInterface: React.FC = () => {
                 ) : (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                         Your Written Answer:
                       </label>
-                      <span className="text-[11px] text-slate-400">
+                      <span className="text-[11px] text-slate-400 font-mono">
                         {currentAnswer?.answerText ? currentAnswer.answerText.length : 0} characters
                       </span>
                     </div>
@@ -361,17 +361,17 @@ export const ExamInterface: React.FC = () => {
                       }
                       value={currentAnswer?.answerText || ''}
                       onChange={(e) => handleAnswerChange(e.target.value)}
-                      className={`w-full p-4 text-xs md:text-sm border rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all ${
+                      className={`w-full p-4 text-xs md:text-sm border rounded-2xl focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/40 transition-all ${
                         currentQuestion.type === 'CODING'
-                          ? 'font-mono bg-slate-900 text-slate-100 border-slate-700 focus:border-indigo-400'
-                          : 'bg-white text-slate-800 border-slate-300 focus:border-indigo-500'
+                          ? 'font-mono bg-[#060913] text-emerald-300 border-slate-700'
+                          : 'bg-[#070B14] text-white border-slate-700/80'
                       }`}
                     />
                   </div>
                 )}
 
                 {/* Answer Sheet OCR Uploader */}
-                <div className="pt-4 border-t border-slate-100">
+                <div className="pt-4 border-t border-slate-800">
                   <OcrUploader
                     submissionId={Number(submissionId)}
                     currentAttachmentUrl={currentAnswer?.attachmentUrl}
@@ -446,12 +446,12 @@ export const ExamInterface: React.FC = () => {
             onSelectQuestion={(idx) => setCurrentIdx(idx)}
           />
 
-          <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 space-y-2">
-            <div className="flex items-center gap-2 font-bold text-indigo-950">
-              <HelpCircle className="w-4 h-4 text-indigo-600" />
+          <div className="p-4 rounded-3xl bg-[#0B101D] border border-slate-800 text-xs text-slate-300 space-y-2 shadow-xl">
+            <div className="flex items-center gap-2 font-bold text-amber-300">
+              <HelpCircle className="w-4 h-4 text-amber-400" />
               <span>Exam Tip</span>
             </div>
-            <p className="leading-relaxed text-[11px] text-indigo-800">
+            <p className="leading-relaxed text-[11px] text-slate-400">
               Your written responses are auto-saved. For handwritten equations or diagrams, snap a photo
               and upload using the OCR document section.
             </p>

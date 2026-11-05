@@ -115,20 +115,20 @@ const ToastItem: React.FC<{ toast: ToastMessage; onClose: () => void }> = ({ toa
   return (
     <div
       className={cn(
-        'pointer-events-auto flex items-start justify-between gap-3 p-4 bg-white rounded-xl shadow-lg border border-slate-200/80 transform transition-all animate-in slide-in-from-bottom-2',
+        'pointer-events-auto flex items-start justify-between gap-3 p-4 bg-[#0B101D] rounded-2xl shadow-2xl border border-slate-800 transform transition-all animate-in slide-in-from-bottom-2',
         borders[toast.type]
       )}
     >
       <div className="flex items-start gap-3">
         {icons[toast.type]}
         <div>
-          {toast.title && <h5 className="text-xs font-bold text-slate-900">{toast.title}</h5>}
-          <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{toast.message}</p>
+          {toast.title && <h5 className="text-xs font-bold text-white">{toast.title}</h5>}
+          <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">{toast.message}</p>
         </div>
       </div>
       <button
         onClick={onClose}
-        className="text-slate-400 hover:text-slate-600 p-1 rounded-md transition-colors"
+        className="text-slate-400 hover:text-white p-1 rounded-md transition-colors"
         aria-label="Close notification"
       >
         <X className="w-4 h-4" />

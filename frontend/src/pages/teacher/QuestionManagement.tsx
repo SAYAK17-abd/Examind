@@ -296,24 +296,24 @@ export const QuestionManagement: React.FC = () => {
         ]}
       />
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-br from-[#0B101D] via-[#0F172A] to-[#070B14] border border-slate-800 shadow-xl">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Question & Rubric Builder</h1>
-            <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded-md">
+            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">Question & Rubric Builder</h1>
+            <span className="text-xs font-bold text-amber-300 bg-amber-400/10 border border-amber-400/25 px-2.5 py-0.5 rounded-lg">
               {questions.length} Questions
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Exam: <strong className="text-slate-700">{examTitle}</strong> • Configure question types, reference answers, and multi-criteria rubrics.
+          <p className="text-xs md:text-sm text-slate-300 mt-1">
+            Exam: <strong className="text-amber-300">{examTitle}</strong> • Configure question types, reference answers, and multi-criteria rubrics.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <Button
             variant="outline"
             size="sm"
             onClick={() => navigate('/teacher/exams')}
-            leftIcon={<ArrowLeft className="w-4 h-4" />}
+            leftIcon={<ArrowLeft className="w-4 h-4 text-slate-400" />}
           >
             Exams List
           </Button>
@@ -321,8 +321,8 @@ export const QuestionManagement: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={() => setIsImportModalOpen(true)}
-            className="border-amber-400/40 text-amber-700 bg-amber-50/50 hover:bg-amber-100/60"
-            leftIcon={<Sparkles className="w-4 h-4 text-amber-500" />}
+            className="border-amber-400/40 text-amber-300 hover:text-white"
+            leftIcon={<Sparkles className="w-4 h-4 text-amber-400" />}
           >
             Import Paper via OCR
           </Button>
@@ -342,30 +342,30 @@ export const QuestionManagement: React.FC = () => {
         <EmptyState
           icon={HelpCircle}
           title="No questions defined yet"
-          description="Add multiple-choice, short answer, descriptive, or coding questions to this exam."
+          description="Add multiple-choice, short answer, descriptive, numerical, or coding questions to this exam."
           actionLabel="Add First Question"
           onAction={openCreateQuestion}
         />
       ) : (
         <div className="space-y-4">
           {questions.map((q, idx) => (
-            <Card key={q.id} hover className="overflow-hidden">
-              <CardHeader className="bg-slate-50/70 p-5 flex flex-row items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-indigo-700 bg-white border border-indigo-200 px-2.5 py-1 rounded-md">
+            <div key={q.id} className="banger-card rounded-3xl overflow-hidden border border-slate-800 bg-[#0B101D] shadow-xl">
+              <div className="bg-[#070B14] p-5 border-b border-slate-800 flex flex-row items-center justify-between">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-black text-amber-300 bg-amber-400/10 border border-amber-400/25 px-2.5 py-1 rounded-lg">
                     Q{q.questionNumber || idx + 1}
                   </span>
-                  <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded uppercase">
+                  <span className="text-xs font-semibold text-slate-300 bg-slate-800 border border-slate-700/80 px-2 py-0.5 rounded-md uppercase">
                     {q.type}
                   </span>
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-0.5 rounded-md font-mono">
                     {q.marks} Marks
                   </span>
-                  <span className="text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded">
+                  <span className="text-xs font-medium text-slate-300 bg-slate-800/80 border border-slate-700/80 px-2 py-0.5 rounded-md">
                     {q.difficulty}
                   </span>
                   {q.topic && (
-                    <span className="text-xs text-slate-500 italic">Topic: {q.topic}</span>
+                    <span className="text-xs text-amber-400/80 italic">Topic: {q.topic}</span>
                   )}
                 </div>
 
@@ -374,14 +374,14 @@ export const QuestionManagement: React.FC = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => openRubricBuilder(q)}
-                    leftIcon={<ListPlus className="w-3.5 h-3.5 text-indigo-600" />}
+                    leftIcon={<ListPlus className="w-3.5 h-3.5 text-amber-400" />}
                   >
                     Rubric ({q.criteria?.length || 0})
                   </Button>
                   <button
                     type="button"
                     onClick={() => openEditQuestion(q)}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 transition-colors"
+                    className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                     title="Edit Question"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -389,27 +389,27 @@ export const QuestionManagement: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setQuestionToDelete(q)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                    className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
                     title="Delete Question"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-              </CardHeader>
+              </div>
 
-              <CardContent className="p-6 space-y-4 text-xs">
+              <div className="p-6 space-y-4 text-xs">
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">Prompt:</h4>
-                  <p className="text-slate-800 font-medium text-sm leading-relaxed">{q.questionText}</p>
+                  <h4 className="font-bold text-slate-400 uppercase tracking-wider text-[11px] mb-1.5">Question Prompt:</h4>
+                  <p className="text-white font-medium text-sm leading-relaxed">{q.questionText}</p>
                 </div>
 
                 {q.type === 'MCQ' && q.options && q.options.length > 0 && (
-                  <div className="p-3 bg-slate-50 rounded-xl space-y-1.5">
-                    <span className="font-bold text-slate-700 block">MCQ Options:</span>
-                    <div className="grid grid-cols-2 gap-2">
+                  <div className="p-4 bg-[#070B14] rounded-2xl border border-slate-800/80 space-y-2">
+                    <span className="font-bold text-slate-300 block">MCQ Options:</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {q.options.map((opt, oIdx) => (
-                        <div key={oIdx} className="p-2 rounded bg-white border border-slate-200 text-slate-700">
-                          <strong>{String.fromCharCode(65 + oIdx)}.</strong> {opt}
+                        <div key={oIdx} className="p-2.5 rounded-xl bg-[#0B101D] border border-slate-800 text-slate-200">
+                          <strong className="text-amber-400 mr-1.5">{String.fromCharCode(65 + oIdx)}.</strong> {opt}
                         </div>
                       ))}
                     </div>
@@ -417,27 +417,27 @@ export const QuestionManagement: React.FC = () => {
                 )}
 
                 {q.referenceAnswer && (
-                  <div className="p-3.5 bg-indigo-50/40 rounded-xl border border-indigo-100">
-                    <span className="font-bold text-indigo-900 block mb-1">Reference / Model Answer:</span>
-                    <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">{q.referenceAnswer}</p>
+                  <div className="p-4 bg-amber-400/5 rounded-2xl border border-amber-400/20">
+                    <span className="font-bold text-amber-300 block mb-1">Reference / Model Answer:</span>
+                    <p className="text-slate-200 whitespace-pre-wrap leading-relaxed">{q.referenceAnswer}</p>
                   </div>
                 )}
 
                 {q.expectedConcepts && q.expectedConcepts.length > 0 && (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-slate-700">Expected Concepts:</span>
+                  <div className="flex items-center gap-2 flex-wrap pt-1">
+                    <span className="font-bold text-slate-400">Expected Concepts:</span>
                     {q.expectedConcepts.map((c, cIdx) => (
                       <span
                         key={cIdx}
-                        className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-200 font-medium text-[11px]"
+                        className="px-2.5 py-0.5 rounded-lg bg-indigo-500/15 text-indigo-300 border border-indigo-500/25 font-medium text-[11px]"
                       >
                         {c}
                       </span>
                     ))}
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}
@@ -503,8 +503,8 @@ export const QuestionManagement: React.FC = () => {
           />
 
           {qType === 'MCQ' && (
-            <div className="space-y-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="font-bold text-slate-800 block">MCQ Options:</span>
+            <div className="space-y-2 p-4 bg-[#070B14] rounded-2xl border border-slate-800">
+              <span className="font-bold text-slate-300 block text-xs">MCQ Options:</span>
               {qOptions.map((opt, oIdx) => (
                 <Input
                   key={oIdx}
@@ -574,7 +574,7 @@ export const QuestionManagement: React.FC = () => {
 
           <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
             {rubricCriteria.map((crit, idx) => (
-              <div key={idx} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+              <div key={idx} className="p-4 rounded-2xl border border-slate-800 bg-[#070B14] space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1">
                     <Input
@@ -598,7 +598,7 @@ export const QuestionManagement: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleRemoveCriterion(idx)}
-                    className="p-1.5 mt-5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-white transition-colors"
+                    className="p-2 mt-5 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
                     aria-label="Remove criterion"
                   >
                     <X className="w-4 h-4" />
@@ -614,9 +614,9 @@ export const QuestionManagement: React.FC = () => {
             ))}
           </div>
 
-          <div className="p-3 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-between">
-            <span className="font-semibold text-indigo-900">Total Rubric Marks:</span>
-            <span className="font-black text-indigo-900 text-sm">
+          <div className="p-4 rounded-2xl bg-amber-400/10 border border-amber-400/25 flex items-center justify-between">
+            <span className="font-bold text-slate-200 text-xs">Total Rubric Marks:</span>
+            <span className="font-mono font-black text-amber-300 text-sm">
               {rubricCriteria.reduce((sum, c) => sum + Number(c.maxMarks || 0), 0)} / {rubricQuestion?.marks || 0}
             </span>
           </div>
@@ -650,7 +650,7 @@ export const QuestionManagement: React.FC = () => {
       >
         <div className="space-y-5">
           {!auditReport ? (
-            <div className="p-8 rounded-2xl border-2 border-dashed border-slate-300 hover:border-amber-500/80 bg-slate-50/50 text-center transition cursor-pointer relative">
+            <div className="p-8 rounded-3xl border-2 border-dashed border-slate-800 hover:border-amber-400/60 bg-[#070B14] text-center transition cursor-pointer relative group">
               <input
                 type="file"
                 accept=".pdf,.png,.jpg,.jpeg"
@@ -658,22 +658,22 @@ export const QuestionManagement: React.FC = () => {
                 disabled={importingPaper}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto mb-2">
-                <Sparkles className="w-6 h-6" />
+              <div className="w-14 h-14 rounded-2xl bg-amber-400/10 text-amber-400 border border-amber-400/25 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition">
+                <Sparkles className="w-7 h-7" />
               </div>
-              <h3 className="text-sm font-bold text-slate-800">
+              <h3 className="text-sm font-bold text-white">
                 {importingPaper ? 'Running OCR & AI Structural Audit...' : 'Drop Question Paper File (PDF, Image)'}
               </h3>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-400 mt-1">
                 Scans questions, checks mark distributions, and flags ambiguities in real time
               </p>
             </div>
           ) : (
             <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
-              <div className="p-4 rounded-xl bg-slate-100 flex items-center justify-between text-xs">
+              <div className="p-4 rounded-2xl bg-[#070B14] border border-slate-800 flex items-center justify-between text-xs">
                 <div>
-                  <span className="font-bold text-slate-900">{auditReport.filename}</span>
-                  <p className="text-slate-500">
+                  <span className="font-bold text-white text-sm">{auditReport.filename}</span>
+                  <p className="text-slate-400 mt-0.5">
                     {auditReport.totalQuestions} questions detected • {auditReport.totalMarksScanned} marks total
                   </p>
                 </div>
@@ -693,30 +693,30 @@ export const QuestionManagement: React.FC = () => {
                 {auditReport.questions.map((q: any, qIdx: number) => (
                   <div
                     key={qIdx}
-                    className={`p-4 rounded-xl border text-xs space-y-2 ${
+                    className={`p-4 rounded-2xl border text-xs space-y-2 ${
                       q.warnings && q.warnings.length > 0
-                        ? 'bg-amber-50/40 border-amber-300'
-                        : 'bg-white border-slate-200'
+                        ? 'bg-amber-400/5 border-amber-400/30'
+                        : 'bg-[#070B14] border-slate-800'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
+                        <span className="font-bold text-amber-300 bg-amber-400/10 border border-amber-400/25 px-2.5 py-0.5 rounded-lg">
                           Q{q.questionNumber}
                         </span>
-                        <span className="font-semibold text-slate-700">{q.questionType}</span>
-                        <span className="font-bold text-emerald-700">{q.maxMarks || '0'} Marks</span>
+                        <span className="font-semibold text-slate-300">{q.questionType}</span>
+                        <span className="font-bold text-emerald-400 font-mono">{q.maxMarks || '0'} Marks</span>
                       </div>
                       {q.warnings && q.warnings.length > 0 ? (
-                        <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[11px]">
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-400/30 font-bold text-[11px]">
                           Attention Required
                         </span>
                       ) : (
-                        <span className="text-emerald-600 font-medium text-[11px]">✓ Verified</span>
+                        <span className="text-emerald-400 font-medium text-[11px]">✓ Verified</span>
                       )}
                     </div>
 
-                    <p className="text-slate-800 font-medium leading-relaxed">{q.questionText}</p>
+                    <p className="text-white font-medium leading-relaxed">{q.questionText}</p>
 
                     {/* Warnings and AI Fix recommendation */}
                     {q.warnings && q.warnings.length > 0 && (
