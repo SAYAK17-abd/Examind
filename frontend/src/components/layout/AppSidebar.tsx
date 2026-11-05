@@ -113,10 +113,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose }) => {
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'group flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all',
+                  'group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all',
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
-                    : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-amber-500/15 via-amber-400/10 to-transparent border border-amber-400/30 text-amber-300 font-bold shadow-md shadow-black/40'
+                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
                 )
               }
             >
@@ -125,7 +125,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose }) => {
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <span className="rounded-full bg-indigo-100 text-indigo-700 px-1.5 py-0.2 text-[9px] font-extrabold tracking-wide">
+                <span className="rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 px-1.5 py-0.2 text-[9px] font-extrabold tracking-wide">
                   {item.badge}
                 </span>
               )}
@@ -135,13 +135,13 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose }) => {
       </div>
 
       {/* Footer System Status Banner */}
-      <div className="mt-auto px-3 pt-4 border-t border-slate-100">
-        <div className="rounded-xl bg-slate-50 p-3 border border-slate-200/60">
+      <div className="mt-auto px-3 pt-4 border-t border-slate-800/80">
+        <div className="rounded-2xl bg-[#0B101D] p-3.5 border border-slate-800/80 shadow-lg">
           <div className="flex items-center gap-2 mb-1">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[11px] font-bold text-slate-700">AI Assessment Active</span>
+            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] font-bold text-slate-200">AI Assessment Active</span>
           </div>
-          <p className="text-[10px] text-slate-500 leading-tight">
+          <p className="text-[10px] text-slate-400 leading-tight">
             Hybrid OCR & LLM Semantic Pipeline v2.4
           </p>
         </div>
@@ -152,7 +152,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Desktop Sticky Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col border-r border-slate-200 bg-white min-h-[calc(100vh-4rem)]">
+      <aside className="hidden md:flex w-64 flex-col border-r border-slate-800/80 bg-[#070B16] min-h-[calc(100vh-4rem)]">
         {sidebarContent}
       </aside>
 
@@ -160,10 +160,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose }) => {
       {isOpen && (
         <div className="fixed inset-0 z-40 md:hidden flex">
           <div
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
-          <div className="relative w-64 max-w-xs bg-white shadow-2xl z-50 animate-in slide-in-from-left duration-200">
+          <div className="relative w-64 max-w-xs bg-[#070B16] border-r border-slate-800 shadow-2xl z-50 animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>
         </div>

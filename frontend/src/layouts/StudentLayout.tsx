@@ -7,7 +7,7 @@ export const StudentLayout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-[#040711] text-slate-100">
       <AppNavbar onMenuToggle={() => setMobileMenuOpen(true)} />
       <div className="flex flex-1">
         <AppSidebar isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
