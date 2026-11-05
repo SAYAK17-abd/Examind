@@ -3,6 +3,8 @@ package com.examind.backend.question.entity;
 import com.examind.backend.exam.entity.Exam;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "questions", indexes = {
@@ -42,6 +44,18 @@ public class Question {
 
     @Column(name = "order_number")
     private Integer orderNumber;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "question_options", joinColumns = @JoinColumn(name = "question_id"))
+    @Column(name = "option_text", length = 1000)
+    @OrderColumn(name = "option_order")
+    private List<String> options = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "question_expected_concepts", joinColumns = @JoinColumn(name = "question_id"))
+    @Column(name = "concept", length = 500)
+    @OrderColumn(name = "concept_order")
+    private List<String> expectedConcepts = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -147,6 +161,22 @@ public class Question {
 
     public void setOrderNumber(Integer orderNumber) {
         this.orderNumber = orderNumber;
+    }
+
+    public List<String> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<String> options) {
+        this.options = options != null ? options : new ArrayList<>();
+    }
+
+    public List<String> getExpectedConcepts() {
+        return expectedConcepts;
+    }
+
+    public void setExpectedConcepts(List<String> expectedConcepts) {
+        this.expectedConcepts = expectedConcepts != null ? expectedConcepts : new ArrayList<>();
     }
 
     public LocalDateTime getCreatedAt() {

@@ -61,6 +61,13 @@ public class QuestionService {
                 orderNumber
         );
 
+        if (request.getOptions() != null) {
+            question.setOptions(request.getOptions());
+        }
+        if (request.getExpectedConcepts() != null) {
+            question.setExpectedConcepts(request.getExpectedConcepts());
+        }
+
         Question saved = questionRepository.save(question);
 
         Rubric rubric = null;
@@ -124,6 +131,12 @@ public class QuestionService {
         }
         if (request.getOrderNumber() != null) {
             question.setOrderNumber(request.getOrderNumber());
+        }
+        if (request.getOptions() != null) {
+            question.setOptions(request.getOptions());
+        }
+        if (request.getExpectedConcepts() != null) {
+            question.setExpectedConcepts(request.getExpectedConcepts());
         }
 
         Question updated = questionRepository.save(question);

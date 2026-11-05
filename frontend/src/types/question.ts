@@ -26,9 +26,12 @@ export interface QuestionResponse {
   id: number;
   examId: number;
   questionNumber: number;
+  orderNumber?: number;
   questionText: string;
   type: QuestionType;
+  questionType?: QuestionType;
   marks: number;
+  maxMarks?: number;
   difficulty: QuestionDifficulty;
   topic?: string;
   referenceAnswer?: string;
@@ -41,22 +44,28 @@ export interface QuestionResponse {
 
 export interface CreateQuestionRequest {
   questionText: string;
-  type: QuestionType;
-  marks: number;
+  type?: QuestionType;
+  questionType?: QuestionType;
+  marks?: number;
+  maxMarks?: number;
   difficulty: QuestionDifficulty;
   topic?: string;
   referenceAnswer?: string;
   expectedConcepts?: string[];
   options?: string[];
+  orderNumber?: number;
 }
 
 export interface UpdateQuestionRequest {
   questionText?: string;
   type?: QuestionType;
+  questionType?: QuestionType;
   marks?: number;
+  maxMarks?: number;
   difficulty?: QuestionDifficulty;
   topic?: string;
   referenceAnswer?: string;
   expectedConcepts?: string[];
   options?: string[];
+  orderNumber?: number;
 }

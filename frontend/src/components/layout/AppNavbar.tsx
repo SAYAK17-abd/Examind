@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { notificationService } from '../../services/notificationService';
 import { NotificationResponse } from '../../types';
 import { Badge } from '../common/Badge';
+import { AcademicLogo } from '../common/AcademicLogo';
 import {
   Bell,
   LogOut,
@@ -13,6 +14,11 @@ import {
   GraduationCap,
   ShieldCheck,
   ChevronDown,
+  MoreVertical,
+  Layers,
+  Camera,
+  FileCheck2,
+  BookOpen,
 } from 'lucide-react';
 
 export interface AppNavbarProps {
@@ -27,9 +33,11 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ onMenuToggle }) => {
   const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
+  const [showModuleMenu, setShowModuleMenu] = useState<boolean>(false);
 
   const notifRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const moduleMenuRef = useRef<HTMLDivElement>(null);
 
   // Poll or load notifications on mount
   useEffect(() => {
@@ -60,6 +68,9 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ onMenuToggle }) => {
       }
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setShowUserMenu(false);
+      }
+      if (moduleMenuRef.current && !moduleMenuRef.current.contains(e.target as Node)) {
+        setShowModuleMenu(false);
       }
     };
 
@@ -113,18 +124,8 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ onMenuToggle }) => {
             <Menu className="w-5 h-5" />
           </button>
         )}
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-200">
-            <GraduationCap className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold tracking-tight text-slate-900 text-lg">EXAMIND</span>
-              <span className="hidden sm:inline-block rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-100">
-                AI Pro
-              </span>
-            </div>
-          </div>
+        <div className="cursor-pointer" onClick={() => navigate('/')}>
+          <AcademicLogo size="sm" showSubtitle={false} />
         </div>
       </div>
 
@@ -194,6 +195,86 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ onMenuToggle }) => {
           )}
         </div>
 
+        {/* Three-Dot Module Quick Switcher */}
+        <div className="relative" ref={moduleMenuRef}>
+          <button
+            onClick={() => setShowModuleMenu((prev) => !prev)}
+            className="flex items-center justify-center w-9 h-9 rounded-xl hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition border border-transparent hover:border-slate-200"
+            title="Switch Workspace View"
+          >
+            <MoreVertical className="w-5 h-5" />
+          </button>
+
+          {showModuleMenu && (
+            <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl z-50 divide-y divide-slate-100 animate-in fade-in duration-150">
+              <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Workspace Modules
+              </div>
+              <div className="py-1.5 space-y-1">
+                <button
+                  onClick={() => {
+                    setShowModuleMenu(false);
+                    navigate(isTeacher ? '/teacher/exams' : '/student/exams');
+                  }}
+                  className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 text-left transition text-xs font-semibold text-slate-700"
+                >
+                  <Layers className="w-4 h-4 text-indigo-600" />
+                  <div>
+                    <div>Question & Exam Studio</div>
+                    <div className="text-[10px] text-slate-400 font-normal">Author, edit & manage tests</div>
+                  </div>
+                </button>
+
+                {isTeacher && (
+                  <button
+                    onClick={() => {
+                      setShowModuleMenu(false);
+                      navigate('/teacher/scan');
+                    }}
+                    className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 text-left transition text-xs font-semibold text-slate-700"
+                  >
+                    <Camera className="w-4 h-4 text-amber-500" />
+                    <div>
+                      <div>Answer Sheet Scanner</div>
+                      <div className="text-[10px] text-slate-400 font-normal">Bulk OCR & teacher sign-off</div>
+                    </div>
+                  </button>
+                )}
+
+                {isTeacher && (
+                  <button
+                    onClick={() => {
+                      setShowModuleMenu(false);
+                      navigate('/teacher/submissions');
+                    }}
+                    className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 text-left transition text-xs font-semibold text-slate-700"
+                  >
+                    <FileCheck2 className="w-4 h-4 text-emerald-600" />
+                    <div>
+                      <div>Submissions & AI Review</div>
+                      <div className="text-[10px] text-slate-400 font-normal">Evaluation audit & overrides</div>
+                    </div>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => {
+                    setShowModuleMenu(false);
+                    navigate('/student/exams');
+                  }}
+                  className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 text-left transition text-xs font-semibold text-slate-700"
+                >
+                  <BookOpen className="w-4 h-4 text-blue-600" />
+                  <div>
+                    <div>Student Exam Hall</div>
+                    <div className="text-[10px] text-slate-400 font-normal">Timed tests & auto-save room</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* User Menu */}
         <div className="relative" ref={userMenuRef}>
           <button
@@ -231,26 +312,13 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ onMenuToggle }) => {
                   onClick={() => {
                     setShowUserMenu(false);
                     if (isStudent) navigate('/student/insights');
-                    if (isTeacher) navigate('/teacher');
-                    if (isAdmin) navigate('/admin');
+                    if (isTeacher || isAdmin) navigate('/teacher');
                   }}
                   className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-left"
                 >
                   <UserIcon className="w-4 h-4 text-slate-400" />
                   Account & Overview
                 </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      navigate('/admin');
-                    }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-left"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-rose-500" />
-                    Admin Console
-                  </button>
-                )}
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-rose-600 rounded-lg hover:bg-rose-50 transition-colors text-left"

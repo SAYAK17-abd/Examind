@@ -78,23 +78,61 @@ export const teacherService = {
   },
 
   async createQuestion(examId: number, data: CreateQuestionRequest): Promise<QuestionResponse> {
+    const payload = {
+      ...data,
+      questionType: data.questionType || data.type,
+      type: data.type || data.questionType,
+      maxMarks: data.maxMarks !== undefined ? data.maxMarks : data.marks,
+      marks: data.marks !== undefined ? data.marks : data.maxMarks,
+    };
     const res = await apiClient.post<ApiResponse<QuestionResponse>>(
       `/api/teacher/exams/${examId}/questions`,
-      data
+      payload
     );
     return res.data.data;
   },
 
   async updateQuestion(questionId: number, data: UpdateQuestionRequest): Promise<QuestionResponse> {
+    const payload = {
+      ...data,
+      questionType: data.questionType || data.type,
+      type: data.type || data.questionType,
+      maxMarks: data.maxMarks !== undefined ? data.maxMarks : data.marks,
+      marks: data.marks !== undefined ? data.marks : data.maxMarks,
+    };
     const res = await apiClient.put<ApiResponse<QuestionResponse>>(
       `/api/teacher/questions/${questionId}`,
-      data
+      payload
     );
     return res.data.data;
   },
 
   async deleteQuestion(questionId: number): Promise<void> {
     await apiClient.delete(`/api/teacher/questions/${questionId}`);
+  },
+
+  // Question Paper OCR & Ingestion
+  async importQuestionsFromScan(examId: number, file: File): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await apiClient.post<ApiResponse<any>>(
+      `/api/teacher/exams/${examId}/questions/import-scan`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return res.data.data;
+  },
+
+  async confirmQuestionImport(examId: number, questions: CreateQuestionRequest[]): Promise<QuestionResponse[]> {
+    const res = await apiClient.post<ApiResponse<QuestionResponse[]>>(
+      `/api/teacher/exams/${examId}/questions/import-confirm`,
+      questions
+    );
+    return res.data.data;
   },
 
   // Rubrics

@@ -4,5 +4,6 @@ public enum QuestionType {
     MCQ,
     SHORT_ANSWER,
     DESCRIPTIVE,
-    CODING
+    CODING,
+    NUMERICAL
 }

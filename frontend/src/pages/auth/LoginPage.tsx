@@ -123,7 +123,7 @@ export const LoginPage: React.FC = () => {
           </span>
           <span className="text-[10px] text-slate-400">Default: Password123!</span>
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => setDemoCredentials('student@examind.edu')}
@@ -137,13 +137,6 @@ export const LoginPage: React.FC = () => {
             className="p-2 text-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors"
           >
             Teacher
-          </button>
-          <button
-            type="button"
-            onClick={() => setDemoCredentials('admin@examind.edu')}
-            className="p-2 text-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-[11px] font-semibold text-slate-700 transition-colors"
-          >
-            Admin
           </button>
         </div>
       </div>

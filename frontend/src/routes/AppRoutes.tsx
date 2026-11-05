@@ -31,6 +31,7 @@ import { QuestionManagement } from '../pages/teacher/QuestionManagement';
 import { SubmissionMonitoring } from '../pages/teacher/SubmissionMonitoring';
 import { EvaluationReview } from '../pages/teacher/EvaluationReview';
 import { TeacherAnalytics } from '../pages/teacher/TeacherAnalytics';
+import { BulkScanPage } from '../pages/teacher/BulkScanPage';
 
 // Admin Pages
 import { AdminDashboard } from '../pages/admin/AdminDashboard';
@@ -42,8 +43,7 @@ const RootRedirect: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  if (isAdmin) return <Navigate to="/admin" replace />;
-  if (isTeacher) return <Navigate to="/teacher" replace />;
+  if (isTeacher || isAdmin) return <Navigate to="/teacher" replace />;
   if (isStudent) return <Navigate to="/student" replace />;
 
   return <Navigate to="/login" replace />;
@@ -98,6 +98,8 @@ export const AppRoutes: React.FC = () => {
         <Route path="exams/:id/edit" element={<ExamForm />} />
         <Route path="exams/:examId/questions" element={<QuestionManagement />} />
         <Route path="exams/:examId/submissions" element={<SubmissionMonitoring />} />
+        <Route path="scan" element={<BulkScanPage />} />
+        <Route path="exams/:examId/scan" element={<BulkScanPage />} />
         <Route path="submissions" element={<SubmissionMonitoring />} />
         <Route path="evaluations/:evaluationId" element={<EvaluationReview />} />
         <Route path="analytics" element={<TeacherAnalytics />} />

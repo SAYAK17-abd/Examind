@@ -14,6 +14,7 @@ class DocumentExtractionResponse(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     filename: str = Field(..., description="Original uploaded filename")
+    studentIdentifier: Optional[str] = Field(None, description="Extracted roll number, student ID or candidate identifier")
     pageCount: int = Field(default=1, description="Number of pages in the processed document")
     extractedText: str = Field(..., description="Full cleaned extracted text across all pages")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Overall OCR or extraction confidence score")
@@ -21,3 +22,12 @@ class DocumentExtractionResponse(BaseModel):
     requiresReview: bool = Field(False, description="Flag indicating teacher review required due to low confidence or segmentation ambiguity")
     answers: List[ExtractedAnswer] = Field(default_factory=list, description="Structured segmented answers mapped to question numbers")
     warnings: List[str] = Field(default_factory=list, description="Any processing warnings, e.g. low confidence, handwriting limitations")
+
+
+class BulkDocumentExtractionResponse(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    totalFiles: int = Field(..., description="Total count of documents in batch")
+    successfulExtractions: int = Field(..., description="Count of successfully digitized documents")
+    requiresReviewCount: int = Field(default=0, description="Count of copies that need teacher sign-off")
+    documents: List[DocumentExtractionResponse] = Field(default_factory=list, description="Extracted answer sheet payloads")

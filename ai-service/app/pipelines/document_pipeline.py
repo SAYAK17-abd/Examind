@@ -65,6 +65,7 @@ class DocumentPipeline:
             extra_warnings = []
 
         cleaned_text = normalize_text(raw_text)
+        student_id = self.segmenter.extract_student_identifier(cleaned_text)
 
         seg_result = self.segmenter.segment(cleaned_text)
         overall_confidence = round(min(confidence, seg_result.confidence), 2)
@@ -74,6 +75,7 @@ class DocumentPipeline:
 
         return {
             "filename": filename,
+            "studentIdentifier": student_id,
             "pageCount": page_count,
             "extractedText": cleaned_text,
             "confidence": overall_confidence,

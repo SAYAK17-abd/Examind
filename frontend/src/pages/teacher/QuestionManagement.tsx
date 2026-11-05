@@ -65,6 +65,12 @@ export const QuestionManagement: React.FC = () => {
   const [rubricCriteria, setRubricCriteria] = useState<RubricCriterion[]>([]);
   const [savingRubric, setSavingRubric] = useState(false);
 
+  // AI Question Paper Import Modal
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importingPaper, setImportingPaper] = useState(false);
+  const [auditReport, setAuditReport] = useState<any | null>(null);
+  const [confirmingImport, setConfirmingImport] = useState(false);
+
   // Delete Question
   const [questionToDelete, setQuestionToDelete] = useState<QuestionResponse | null>(null);
   const [deletingQuestion, setDeletingQuestion] = useState(false);
@@ -227,6 +233,59 @@ export const QuestionManagement: React.FC = () => {
     }
   };
 
+  const handlePaperUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !examId) return;
+
+    setImportingPaper(true);
+    try {
+      const report = await teacherService.importQuestionsFromScan(Number(examId), file);
+      setAuditReport(report);
+      toast.success(`OCR parsed ${report.totalQuestions} questions with real-time audit.`);
+    } catch (err) {
+      toast.error(extractErrorMessage(err), 'Failed to analyze question paper');
+    } finally {
+      setImportingPaper(false);
+    }
+  };
+
+  const handleApplyAiFix = (qIdx: number, fixMarks: number) => {
+    if (!auditReport) return;
+    const nextQuestions = [...auditReport.questions];
+    nextQuestions[qIdx].maxMarks = fixMarks;
+    nextQuestions[qIdx].warnings = [];
+    setAuditReport({
+      ...auditReport,
+      questions: nextQuestions,
+    });
+    toast.success(`Applied AI fix: set ${fixMarks} marks.`);
+  };
+
+  const handleConfirmBatchImport = async () => {
+    if (!auditReport || !examId) return;
+    setConfirmingImport(true);
+    try {
+      const payload: CreateQuestionRequest[] = auditReport.questions.map((q: any) => ({
+        questionText: q.questionText,
+        type: q.questionType,
+        marks: q.maxMarks || 10,
+        difficulty: 'MEDIUM',
+        topic: q.topic,
+        options: q.options,
+      }));
+
+      await teacherService.confirmQuestionImport(Number(examId), payload);
+      toast.success(`Imported ${payload.length} questions into exam.`);
+      setIsImportModalOpen(false);
+      setAuditReport(null);
+      await fetchQuestions();
+    } catch (err) {
+      toast.error(extractErrorMessage(err), 'Failed to import questions');
+    } finally {
+      setConfirmingImport(false);
+    }
+  };
+
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-150">
       <Breadcrumb
@@ -257,6 +316,15 @@ export const QuestionManagement: React.FC = () => {
             leftIcon={<ArrowLeft className="w-4 h-4" />}
           >
             Exams List
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsImportModalOpen(true)}
+            className="border-amber-400/40 text-amber-700 bg-amber-50/50 hover:bg-amber-100/60"
+            leftIcon={<Sparkles className="w-4 h-4 text-amber-500" />}
+          >
+            Import Paper via OCR
           </Button>
           <Button
             variant="primary"
@@ -564,6 +632,126 @@ export const QuestionManagement: React.FC = () => {
               onClick={handleSaveRubric}
             >
               Save Rubric
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* AI Question Paper Ingestion & Audit Modal */}
+      <Modal
+        isOpen={isImportModalOpen}
+        onClose={() => {
+          setIsImportModalOpen(false);
+          setAuditReport(null);
+        }}
+        title="AI Question Paper Ingestion & Error Audit"
+        description="Upload handwritten test sheets or PDF copies. The AI automatically parses questions and detects missing marks or ambiguities."
+        maxWidth="3xl"
+      >
+        <div className="space-y-5">
+          {!auditReport ? (
+            <div className="p-8 rounded-2xl border-2 border-dashed border-slate-300 hover:border-amber-500/80 bg-slate-50/50 text-center transition cursor-pointer relative">
+              <input
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg"
+                onChange={handlePaperUpload}
+                disabled={importingPaper}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto mb-2">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <h3 className="text-sm font-bold text-slate-800">
+                {importingPaper ? 'Running OCR & AI Structural Audit...' : 'Drop Question Paper File (PDF, Image)'}
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Scans questions, checks mark distributions, and flags ambiguities in real time
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+              <div className="p-4 rounded-xl bg-slate-100 flex items-center justify-between text-xs">
+                <div>
+                  <span className="font-bold text-slate-900">{auditReport.filename}</span>
+                  <p className="text-slate-500">
+                    {auditReport.totalQuestions} questions detected • {auditReport.totalMarksScanned} marks total
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="sm"
+                  isLoading={confirmingImport}
+                  onClick={handleConfirmBatchImport}
+                >
+                  Import All Approved Questions ({auditReport.questions.length})
+                </Button>
+              </div>
+
+              {/* Questions List with Warnings */}
+              <div className="space-y-3">
+                {auditReport.questions.map((q: any, qIdx: number) => (
+                  <div
+                    key={qIdx}
+                    className={`p-4 rounded-xl border text-xs space-y-2 ${
+                      q.warnings && q.warnings.length > 0
+                        ? 'bg-amber-50/40 border-amber-300'
+                        : 'bg-white border-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
+                          Q{q.questionNumber}
+                        </span>
+                        <span className="font-semibold text-slate-700">{q.questionType}</span>
+                        <span className="font-bold text-emerald-700">{q.maxMarks || '0'} Marks</span>
+                      </div>
+                      {q.warnings && q.warnings.length > 0 ? (
+                        <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[11px]">
+                          Attention Required
+                        </span>
+                      ) : (
+                        <span className="text-emerald-600 font-medium text-[11px]">✓ Verified</span>
+                      )}
+                    </div>
+
+                    <p className="text-slate-800 font-medium leading-relaxed">{q.questionText}</p>
+
+                    {/* Warnings and AI Fix recommendation */}
+                    {q.warnings && q.warnings.length > 0 && (
+                      <div className="p-3 rounded-lg bg-amber-100/70 border border-amber-200 space-y-1.5">
+                        <span className="font-bold text-amber-900 block">AI Diagnostic Notice:</span>
+                        {q.warnings.map((w: any, wIdx: number) => (
+                          <div key={wIdx} className="text-amber-800 leading-relaxed">
+                            • {w.message} {w.suggestion && <strong>Fix: {w.suggestion}</strong>}
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => handleApplyAiFix(qIdx, 5)}
+                          className="mt-1 px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-700 text-white font-semibold text-[11px]"
+                        >
+                          Apply AI Fix (Set 5 Marks)
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="pt-3 border-t border-slate-100 flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setIsImportModalOpen(false);
+                setAuditReport(null);
+              }}
+            >
+              Close
             </Button>
           </div>
         </div>

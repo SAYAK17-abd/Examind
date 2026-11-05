@@ -63,6 +63,9 @@ public class AuthService {
         }
 
         RoleName roleName = request.getRole();
+        if (roleName == RoleName.ROLE_ADMIN) {
+            throw new BadRequestException("Public self-registration as ADMIN is not permitted.");
+        }
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new BadRequestException("Invalid role specified: " + roleName));
 

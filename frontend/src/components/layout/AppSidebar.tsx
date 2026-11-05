@@ -12,6 +12,7 @@ import {
   Settings,
   Sparkles,
   Layers,
+  Camera,
   X,
 } from 'lucide-react';
 
@@ -56,7 +57,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose }) => {
         badge: 'AI',
       },
     ];
-  } else if (isTeacher) {
+  } else if (isTeacher || isAdmin) {
     navItems = [
       {
         label: 'Teacher Dashboard',
@@ -69,6 +70,12 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose }) => {
         icon: <Layers className="w-4 h-4" />,
       },
       {
+        label: 'Scan Sheets (OCR)',
+        path: '/teacher/scan',
+        icon: <Camera className="w-4 h-4 text-amber-500" />,
+        badge: 'NEW',
+      },
+      {
         label: 'Submissions & Review',
         path: '/teacher/submissions',
         icon: <FileCheck2 className="w-4 h-4" />,
@@ -77,19 +84,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose }) => {
         label: 'Analytics & Similarity',
         path: '/teacher/analytics',
         icon: <BarChart3 className="w-4 h-4" />,
-      },
-    ];
-  } else if (isAdmin) {
-    navItems = [
-      {
-        label: 'Admin Overview',
-        path: '/admin',
-        icon: <LayoutDashboard className="w-4 h-4" />,
-      },
-      {
-        label: 'User Management',
-        path: '/admin/users',
-        icon: <Users className="w-4 h-4" />,
       },
     ];
   }

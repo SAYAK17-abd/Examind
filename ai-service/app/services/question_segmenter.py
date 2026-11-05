@@ -20,6 +20,11 @@ MARKER_PATTERNS = [
     re.compile(r"^(?:\(?(\d+)[\).\:-])\s*(.*)$"),
 ]
 
+STUDENT_ID_PATTERNS = [
+    re.compile(r"(?:roll\s*(?:no|number)?|registration|reg\s*no|student\s*id|id\s*no)[\s.:#-]*([a-zA-Z0-9_\-/]+)", re.IGNORECASE),
+    re.compile(r"([0-9]{4}-[a-zA-Z]{2,4}-[0-9]{2,5})", re.IGNORECASE),
+]
+
 ANSWER_PREFIX_PATTERN = re.compile(r"^(?:ans|answer)[.\s:-]*(.*)$", re.IGNORECASE)
 
 
@@ -41,6 +46,16 @@ class QuestionSegmenter:
     - Ans 1 / Answer 1
     Detects question prompts vs student answers and flags ambiguous segmentation for human review.
     """
+
+    def extract_student_identifier(self, text: str) -> Optional[str]:
+        """Detects student roll number or ID from header area."""
+        header_lines = text.split("\n")[:10]
+        header_text = "\n".join(header_lines)
+        for pat in STUDENT_ID_PATTERNS:
+            m = pat.search(header_text)
+            if m:
+                return m.group(1).strip()
+        return None
 
     def is_question_prompt(self, text: str) -> bool:
         """Determines if a line looks like an examination question prompt."""
