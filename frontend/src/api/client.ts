@@ -1,7 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { ApiResponse, AuthResponse } from '../types';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:8085' : '');
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -137,6 +137,9 @@ export function extractErrorMessage(error: unknown): string {
       return data.message;
     }
     if (typeof data === 'string') {
+      if (data.includes('<!DOCTYPE') || data.includes('<html')) {
+        return `Backend service unreachable (${error.response?.status || 'Error'}). Please ensure the backend is running on port 8085.`;
+      }
       return data;
     }
     return error.message || 'An unexpected network error occurred';
