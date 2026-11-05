@@ -34,3 +34,4 @@ class QuestionPaperAuditResponse(BaseModel):
     cleanQuestionsCount: int = Field(default=0, description="Number of questions without any warning flags")
     questions: List[AuditedQuestion] = Field(default_factory=list, description="Extracted questions with audit warnings")
     summaryWarnings: List[str] = Field(default_factory=list, description="High-level document audit observations")
+

@@ -129,3 +129,4 @@ public class TeacherScanController {
         return ResponseEntity.ok(ApiResponse.success(ScanResultResponse.fromEntity(updated), "Scan verified successfully"));
     }
 }
+

@@ -42,3 +42,4 @@ public class VerifyScanRequest {
         this.status = status;
     }
 }
+

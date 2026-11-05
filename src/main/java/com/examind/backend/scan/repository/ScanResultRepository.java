@@ -13,3 +13,4 @@ public interface ScanResultRepository extends JpaRepository<ScanResult, Long> {
 
     long countByExam_IdAndRequiresReviewTrue(Long examId);
 }
+

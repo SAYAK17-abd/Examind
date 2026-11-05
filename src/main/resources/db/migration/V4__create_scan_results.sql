@@ -17,3 +17,4 @@ CREATE TABLE IF NOT EXISTS scan_results (
 CREATE INDEX IF NOT EXISTS idx_scan_results_exam ON scan_results(exam_id);
 CREATE INDEX IF NOT EXISTS idx_scan_results_status ON scan_results(status);
 CREATE INDEX IF NOT EXISTS idx_scan_results_student ON scan_results(student_identifier);
+

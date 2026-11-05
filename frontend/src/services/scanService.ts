@@ -36,3 +36,4 @@ export const scanService = {
     return res.data.data;
   },
 };
+

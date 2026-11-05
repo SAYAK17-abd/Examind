@@ -124,3 +124,4 @@ public class ScanResultResponse {
         this.updatedAt = updatedAt;
     }
 }
+

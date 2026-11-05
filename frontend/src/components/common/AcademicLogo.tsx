@@ -75,3 +75,4 @@ export const AcademicLogo: React.FC<AcademicLogoProps> = ({
     </div>
   );
 };
+
